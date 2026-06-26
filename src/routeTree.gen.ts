@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimetableRouteImport } from './routes/timetable'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as CoursesRouteImport } from './routes/courses'
@@ -25,6 +26,11 @@ import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$s
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
   path: '/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/events'
+    | '/gallery'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/events'
+    | '/gallery'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/events'
+    | '/gallery'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   CoursesRoute: typeof CoursesRouteWithChildren
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
+  GalleryRoute: typeof GalleryRoute
   TimetableRoute: typeof TimetableRouteWithChildren
 }
 
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/timetable'
       fullPath: '/timetable'
       preLoaderRoute: typeof TimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesRoute: CoursesRouteWithChildren,
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
+  GalleryRoute: GalleryRoute,
   TimetableRoute: TimetableRouteWithChildren,
 }
 export const routeTree = rootRouteImport
