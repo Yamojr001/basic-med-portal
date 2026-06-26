@@ -14,6 +14,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
@@ -47,6 +48,11 @@ const DepartmentsRoute = DepartmentsRouteImport.update({
 const CoursesRoute = CoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarRoute = CalendarRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/calendar'
+    | '/contact'
     | '/courses'
     | '/departments'
     | '/events'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/calendar'
+    | '/contact'
     | '/courses'
     | '/departments'
     | '/events'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/calendar'
+    | '/contact'
     | '/courses'
     | '/departments'
     | '/events'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AnnouncementsRoute: typeof AnnouncementsRouteWithChildren
   CalendarRoute: typeof CalendarRoute
+  ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
@@ -242,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/courses'
       fullPath: '/courses'
       preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendar': {
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AnnouncementsRoute: AnnouncementsRouteWithChildren,
   CalendarRoute: CalendarRoute,
+  ContactRoute: ContactRoute,
   CoursesRoute: CoursesRouteWithChildren,
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
