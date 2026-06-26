@@ -7,7 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/lib/use-admin";
 import { useEffect } from "react";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/departments", label: "Departments", icon: Building2 },
   { to: "/admin/courses", label: "Courses", icon: BookOpen },
@@ -20,7 +21,7 @@ const NAV = [
   { to: "/admin/quizzes", label: "Quizzes", icon: GraduationCap },
   { to: "/admin/users", label: "Admins", icon: Users },
   { to: "/admin/settings", label: "Settings", icon: Settings },
-] as const;
+];
 
 export function AdminShell() {
   const { loading, isAdmin, email } = useAdmin();
@@ -52,7 +53,7 @@ export function AdminShell() {
           {NAV.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
-              <Link key={item.to} to={item.to} className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${active ? "bg-[var(--medical)]/10 text-[var(--medical)] font-semibold" : "text-muted-foreground hover:bg-muted"}`}>
+            <Link key={item.to} to={item.to as never} className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${active ? "bg-[var(--medical)]/10 text-[var(--medical)] font-semibold" : "text-muted-foreground hover:bg-muted"}`}>
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
