@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimetableRouteImport } from './routes/timetable'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as QuizzesRouteImport } from './routes/quizzes'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DepartmentsRouteImport } from './routes/departments'
@@ -34,6 +35,11 @@ const TimetableRoute = TimetableRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizzesRoute = QuizzesRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/quizzes'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/quizzes'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/quizzes'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  QuizzesRoute: typeof QuizzesRoute
   SearchRoute: typeof SearchRoute
   TimetableRoute: typeof TimetableRouteWithChildren
 }
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quizzes': {
+      id: '/quizzes'
+      path: '/quizzes'
+      fullPath: '/quizzes'
+      preLoaderRoute: typeof QuizzesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -409,6 +429,7 @@ const rootRouteChildren: RootRouteChildren = {
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  QuizzesRoute: QuizzesRoute,
   SearchRoute: SearchRoute,
   TimetableRoute: TimetableRouteWithChildren,
 }
