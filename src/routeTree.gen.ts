@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DepartmentsRouteImport } from './routes/departments'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 
 const DepartmentsRoute = DepartmentsRouteImport.update({
   id: '/departments',
   path: '/departments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,30 +37,34 @@ const DepartmentsSlugRoute = DepartmentsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRoute
   '/departments': typeof DepartmentsRouteWithChildren
   '/departments/$slug': typeof DepartmentsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRoute
   '/departments': typeof DepartmentsRouteWithChildren
   '/departments/$slug': typeof DepartmentsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRoute
   '/departments': typeof DepartmentsRouteWithChildren
   '/departments/$slug': typeof DepartmentsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/departments' | '/departments/$slug'
+  fullPaths: '/' | '/courses' | '/departments' | '/departments/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/departments' | '/departments/$slug'
-  id: '__root__' | '/' | '/departments' | '/departments/$slug'
+  to: '/' | '/courses' | '/departments' | '/departments/$slug'
+  id: '__root__' | '/' | '/courses' | '/departments' | '/departments/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CoursesRoute: typeof CoursesRoute
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
 }
 
@@ -65,6 +75,13 @@ declare module '@tanstack/react-router' {
       path: '/departments'
       fullPath: '/departments'
       preLoaderRoute: typeof DepartmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -98,6 +115,7 @@ const DepartmentsRouteWithChildren = DepartmentsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CoursesRoute: CoursesRoute,
   DepartmentsRoute: DepartmentsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
