@@ -14,16 +14,667 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      academic_calendar: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_archived: boolean
+          session: string | null
+          start_date: string
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_archived?: boolean
+          session?: string | null
+          start_date: string
+          title: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_archived?: boolean
+          session?: string | null
+          start_date?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      announcements: {
+        Row: {
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_archived: boolean
+          is_pinned: boolean
+          publish_at: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
+          publish_at?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
+          publish_at?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          code: string
+          created_at: string
+          credit_unit: number
+          department_id: string
+          description: string | null
+          id: string
+          lecturer: string | null
+          level: number
+          objectives: string | null
+          semester: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          credit_unit?: number
+          department_id: string
+          description?: string | null
+          id?: string
+          lecturer?: string | null
+          level: number
+          objectives?: string | null
+          semester: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          credit_unit?: number
+          department_id?: string
+          description?: string | null
+          id?: string
+          lecturer?: string | null
+          level?: number
+          objectives?: string | null
+          semester?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      departments: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string | null
+          head_of_department: string | null
+          id: string
+          image_url: string | null
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          head_of_department?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          head_of_department?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          event_date: string
+          event_time: string | null
+          id: string
+          image_url: string | null
+          title: string
+          venue: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          event_time?: string | null
+          id?: string
+          image_url?: string | null
+          title: string
+          venue?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_time?: string | null
+          id?: string
+          image_url?: string | null
+          title?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      exam_timetable: {
+        Row: {
+          course_code: string
+          course_title: string | null
+          created_at: string
+          department_id: string
+          end_time: string
+          exam_date: string
+          id: string
+          level: number
+          semester: string
+          start_time: string
+          venue: string | null
+        }
+        Insert: {
+          course_code: string
+          course_title?: string | null
+          created_at?: string
+          department_id: string
+          end_time: string
+          exam_date: string
+          id?: string
+          level: number
+          semester: string
+          start_time: string
+          venue?: string | null
+        }
+        Update: {
+          course_code?: string
+          course_title?: string | null
+          created_at?: string
+          department_id?: string
+          end_time?: string
+          exam_date?: string
+          id?: string
+          level?: number
+          semester?: string
+          start_time?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_timetable_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_images: {
+        Row: {
+          caption: string | null
+          category: string | null
+          created_at: string
+          id: string
+          image_url: string
+          sort_order: number
+          title: string | null
+        }
+        Insert: {
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          sort_order?: number
+          title?: string | null
+        }
+        Update: {
+          caption?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          sort_order?: number
+          title?: string | null
+        }
+        Relationships: []
+      }
+      lecture_timetable: {
+        Row: {
+          course_code: string
+          course_title: string | null
+          created_at: string
+          day_of_week: string
+          department_id: string
+          end_time: string
+          id: string
+          lecturer: string | null
+          level: number
+          semester: string
+          start_time: string
+          venue: string | null
+        }
+        Insert: {
+          course_code: string
+          course_title?: string | null
+          created_at?: string
+          day_of_week: string
+          department_id: string
+          end_time: string
+          id?: string
+          lecturer?: string | null
+          level: number
+          semester: string
+          start_time: string
+          venue?: string | null
+        }
+        Update: {
+          course_code?: string
+          course_title?: string | null
+          created_at?: string
+          day_of_week?: string
+          department_id?: string
+          end_time?: string
+          id?: string
+          lecturer?: string | null
+          level?: number
+          semester?: string
+          start_time?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lecture_timetable_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_attempts: {
+        Row: {
+          answers: Json | null
+          created_at: string
+          id: string
+          matric_number: string | null
+          passed: boolean
+          percentage: number
+          quiz_id: string
+          score: number
+          student_name: string | null
+          total_points: number
+        }
+        Insert: {
+          answers?: Json | null
+          created_at?: string
+          id?: string
+          matric_number?: string | null
+          passed: boolean
+          percentage: number
+          quiz_id: string
+          score: number
+          student_name?: string | null
+          total_points: number
+        }
+        Update: {
+          answers?: Json | null
+          created_at?: string
+          id?: string
+          matric_number?: string | null
+          passed?: boolean
+          percentage?: number
+          quiz_id?: string
+          score?: number
+          student_name?: string | null
+          total_points?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          correct_answer: string
+          id: string
+          options: Json | null
+          points: number
+          question_text: string
+          question_type: string
+          quiz_id: string
+          sort_order: number
+        }
+        Insert: {
+          correct_answer: string
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text: string
+          question_type: string
+          quiz_id: string
+          sort_order?: number
+        }
+        Update: {
+          correct_answer?: string
+          id?: string
+          options?: Json | null
+          points?: number
+          question_text?: string
+          question_type?: string
+          quiz_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          department_id: string | null
+          description: string | null
+          id: string
+          is_published: boolean
+          level: number | null
+          passing_score: number
+          semester: string | null
+          time_limit_minutes: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          level?: number | null
+          passing_score?: number
+          semester?: string | null
+          time_limit_minutes?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          level?: number | null
+          passing_score?: number
+          semester?: string | null
+          time_limit_minutes?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quizzes_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resources: {
+        Row: {
+          category: string
+          course_id: string
+          created_at: string
+          description: string | null
+          download_count: number
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          course_id: string
+          created_at?: string
+          description?: string | null
+          download_count?: number
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          download_count?: number
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          about: string | null
+          address: string | null
+          banner_url: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          dean_image_url: string | null
+          dean_message: string | null
+          dean_name: string | null
+          dean_title: string | null
+          faculty_name: string
+          footer_text: string | null
+          history: string | null
+          id: number
+          logo_url: string | null
+          mission: string | null
+          seo_description: string | null
+          seo_title: string | null
+          social_facebook: string | null
+          social_instagram: string | null
+          social_linkedin: string | null
+          social_twitter: string | null
+          university_name: string
+          updated_at: string
+          vision: string | null
+        }
+        Insert: {
+          about?: string | null
+          address?: string | null
+          banner_url?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          dean_image_url?: string | null
+          dean_message?: string | null
+          dean_name?: string | null
+          dean_title?: string | null
+          faculty_name?: string
+          footer_text?: string | null
+          history?: string | null
+          id?: number
+          logo_url?: string | null
+          mission?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          university_name?: string
+          updated_at?: string
+          vision?: string | null
+        }
+        Update: {
+          about?: string | null
+          address?: string | null
+          banner_url?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          dean_image_url?: string | null
+          dean_message?: string | null
+          dean_name?: string | null
+          dean_title?: string | null
+          faculty_name?: string
+          footer_text?: string | null
+          history?: string | null
+          id?: number
+          logo_url?: string | null
+          mission?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          university_name?: string
+          updated_at?: string
+          vision?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      increment_resource_download: {
+        Args: { _resource_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +801,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const
