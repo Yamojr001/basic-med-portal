@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimetableRouteImport } from './routes/timetable'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DepartmentsRouteImport } from './routes/departments'
@@ -28,6 +29,11 @@ import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$s
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
   path: '/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/search'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/search'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/search'
     | '/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  SearchRoute: typeof SearchRoute
   TimetableRoute: typeof TimetableRouteWithChildren
 }
 
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/timetable'
       fullPath: '/timetable'
       preLoaderRoute: typeof TimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -389,6 +409,7 @@ const rootRouteChildren: RootRouteChildren = {
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  SearchRoute: SearchRoute,
   TimetableRoute: TimetableRouteWithChildren,
 }
 export const routeTree = rootRouteImport
