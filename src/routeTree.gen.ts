@@ -23,6 +23,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TimetableLecturesRouteImport } from './routes/timetable.lectures'
 import { Route as TimetableExamsRouteImport } from './routes/timetable.exams'
+import { Route as QuizzesIdRouteImport } from './routes/quizzes.$id'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
@@ -97,6 +98,11 @@ const TimetableExamsRoute = TimetableExamsRouteImport.update({
   path: '/exams',
   getParentRoute: () => TimetableRoute,
 } as any)
+const QuizzesIdRoute = QuizzesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => QuizzesRoute,
+} as any)
 const DepartmentsSlugRoute = DepartmentsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -123,12 +129,13 @@ export interface FileRoutesByFullPath {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
-  '/quizzes': typeof QuizzesRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
   '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
@@ -142,12 +149,13 @@ export interface FileRoutesByTo {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
-  '/quizzes': typeof QuizzesRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
   '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
@@ -162,12 +170,13 @@ export interface FileRoutesById {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
-  '/quizzes': typeof QuizzesRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
   '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/quizzes/$id'
     | '/timetable/exams'
     | '/timetable/lectures'
   fileRoutesByTo: FileRoutesByTo
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/quizzes/$id'
     | '/timetable/exams'
     | '/timetable/lectures'
   id:
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/quizzes/$id'
     | '/timetable/exams'
     | '/timetable/lectures'
   fileRoutesById: FileRoutesById
@@ -241,7 +253,7 @@ export interface RootRouteChildren {
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
-  QuizzesRoute: typeof QuizzesRoute
+  QuizzesRoute: typeof QuizzesRouteWithChildren
   SearchRoute: typeof SearchRoute
   TimetableRoute: typeof TimetableRouteWithChildren
 }
@@ -346,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimetableExamsRouteImport
       parentRoute: typeof TimetableRoute
     }
+    '/quizzes/$id': {
+      id: '/quizzes/$id'
+      path: '/$id'
+      fullPath: '/quizzes/$id'
+      preLoaderRoute: typeof QuizzesIdRouteImport
+      parentRoute: typeof QuizzesRoute
+    }
     '/departments/$slug': {
       id: '/departments/$slug'
       path: '/$slug'
@@ -405,6 +424,17 @@ const DepartmentsRouteWithChildren = DepartmentsRoute._addFileChildren(
   DepartmentsRouteChildren,
 )
 
+interface QuizzesRouteChildren {
+  QuizzesIdRoute: typeof QuizzesIdRoute
+}
+
+const QuizzesRouteChildren: QuizzesRouteChildren = {
+  QuizzesIdRoute: QuizzesIdRoute,
+}
+
+const QuizzesRouteWithChildren =
+  QuizzesRoute._addFileChildren(QuizzesRouteChildren)
+
 interface TimetableRouteChildren {
   TimetableExamsRoute: typeof TimetableExamsRoute
   TimetableLecturesRoute: typeof TimetableLecturesRoute
@@ -429,7 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
-  QuizzesRoute: QuizzesRoute,
+  QuizzesRoute: QuizzesRouteWithChildren,
   SearchRoute: SearchRoute,
   TimetableRoute: TimetableRouteWithChildren,
 }
