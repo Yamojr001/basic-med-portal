@@ -9,38 +9,536 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TimetableRouteImport } from './routes/timetable'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as QuizzesRouteImport } from './routes/quizzes'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as DepartmentsRouteImport } from './routes/departments'
+import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AnnouncementsRouteImport } from './routes/announcements'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TimetableLecturesRouteImport } from './routes/timetable.lectures'
+import { Route as TimetableExamsRouteImport } from './routes/timetable.exams'
+import { Route as QuizzesIdRouteImport } from './routes/quizzes.$id'
+import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
+import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
+import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
+import { Route as AdminQuizzesRouteImport } from './routes/admin.quizzes'
+import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminDepartmentsRouteImport } from './routes/admin.departments'
+import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
+import { Route as AdminCalendarRouteImport } from './routes/admin.calendar'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 
+const TimetableRoute = TimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizzesRoute = QuizzesRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DepartmentsRoute = DepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsRoute = AnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const TimetableLecturesRoute = TimetableLecturesRouteImport.update({
+  id: '/lectures',
+  path: '/lectures',
+  getParentRoute: () => TimetableRoute,
+} as any)
+const TimetableExamsRoute = TimetableExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => TimetableRoute,
+} as any)
+const QuizzesIdRoute = QuizzesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => QuizzesRoute,
+} as any)
+const DepartmentsSlugRoute = DepartmentsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => DepartmentsRoute,
+} as any)
+const CoursesCodeRoute = CoursesCodeRouteImport.update({
+  id: '/$code',
+  path: '/$code',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const AnnouncementsSlugRoute = AnnouncementsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AnnouncementsRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTimetableRoute = AdminTimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminResourcesRoute = AdminResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminQuizzesRoute = AdminQuizzesRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDepartmentsRoute = AdminDepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursesRoute = AdminCoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCalendarRoute = AdminCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/announcements': typeof AnnouncementsRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/departments': typeof DepartmentsRouteWithChildren
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
+  '/timetable': typeof TimetableRouteWithChildren
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
+  '/courses/$code': typeof CoursesCodeRoute
+  '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
+  '/timetable/exams': typeof TimetableExamsRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/departments': typeof DepartmentsRouteWithChildren
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
+  '/timetable': typeof TimetableRouteWithChildren
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
+  '/courses/$code': typeof CoursesCodeRoute
+  '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
+  '/timetable/exams': typeof TimetableExamsRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/announcements': typeof AnnouncementsRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/calendar': typeof CalendarRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/departments': typeof DepartmentsRouteWithChildren
+  '/events': typeof EventsRoute
+  '/gallery': typeof GalleryRoute
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
+  '/timetable': typeof TimetableRouteWithChildren
+  '/admin/announcements': typeof AdminAnnouncementsRoute
+  '/admin/calendar': typeof AdminCalendarRoute
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
+  '/courses/$code': typeof CoursesCodeRoute
+  '/departments/$slug': typeof DepartmentsSlugRoute
+  '/quizzes/$id': typeof QuizzesIdRoute
+  '/timetable/exams': typeof TimetableExamsRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/announcements'
+    | '/auth'
+    | '/calendar'
+    | '/contact'
+    | '/courses'
+    | '/departments'
+    | '/events'
+    | '/gallery'
+    | '/quizzes'
+    | '/reset-password'
+    | '/search'
+    | '/timetable'
+    | '/admin/announcements'
+    | '/admin/calendar'
+    | '/admin/courses'
+    | '/admin/departments'
+    | '/admin/events'
+    | '/admin/gallery'
+    | '/admin/quizzes'
+    | '/admin/resources'
+    | '/admin/settings'
+    | '/admin/timetable'
+    | '/admin/users'
+    | '/announcements/$slug'
+    | '/courses/$code'
+    | '/departments/$slug'
+    | '/quizzes/$id'
+    | '/timetable/exams'
+    | '/timetable/lectures'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/announcements'
+    | '/auth'
+    | '/calendar'
+    | '/contact'
+    | '/courses'
+    | '/departments'
+    | '/events'
+    | '/gallery'
+    | '/quizzes'
+    | '/reset-password'
+    | '/search'
+    | '/timetable'
+    | '/admin/announcements'
+    | '/admin/calendar'
+    | '/admin/courses'
+    | '/admin/departments'
+    | '/admin/events'
+    | '/admin/gallery'
+    | '/admin/quizzes'
+    | '/admin/resources'
+    | '/admin/settings'
+    | '/admin/timetable'
+    | '/admin/users'
+    | '/announcements/$slug'
+    | '/courses/$code'
+    | '/departments/$slug'
+    | '/quizzes/$id'
+    | '/timetable/exams'
+    | '/timetable/lectures'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/announcements'
+    | '/auth'
+    | '/calendar'
+    | '/contact'
+    | '/courses'
+    | '/departments'
+    | '/events'
+    | '/gallery'
+    | '/quizzes'
+    | '/reset-password'
+    | '/search'
+    | '/timetable'
+    | '/admin/announcements'
+    | '/admin/calendar'
+    | '/admin/courses'
+    | '/admin/departments'
+    | '/admin/events'
+    | '/admin/gallery'
+    | '/admin/quizzes'
+    | '/admin/resources'
+    | '/admin/settings'
+    | '/admin/timetable'
+    | '/admin/users'
+    | '/announcements/$slug'
+    | '/courses/$code'
+    | '/departments/$slug'
+    | '/quizzes/$id'
+    | '/timetable/exams'
+    | '/timetable/lectures'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AnnouncementsRoute: typeof AnnouncementsRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  CalendarRoute: typeof CalendarRoute
+  ContactRoute: typeof ContactRoute
+  CoursesRoute: typeof CoursesRouteWithChildren
+  DepartmentsRoute: typeof DepartmentsRouteWithChildren
+  EventsRoute: typeof EventsRoute
+  GalleryRoute: typeof GalleryRoute
+  QuizzesRoute: typeof QuizzesRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SearchRoute: typeof SearchRoute
+  TimetableRoute: typeof TimetableRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/timetable': {
+      id: '/timetable'
+      path: '/timetable'
+      fullPath: '/timetable'
+      preLoaderRoute: typeof TimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quizzes': {
+      id: '/quizzes'
+      path: '/quizzes'
+      fullPath: '/quizzes'
+      preLoaderRoute: typeof QuizzesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/departments': {
+      id: '/departments'
+      path: '/departments'
+      fullPath: '/departments'
+      preLoaderRoute: typeof DepartmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements': {
+      id: '/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AnnouncementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +546,243 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/timetable/lectures': {
+      id: '/timetable/lectures'
+      path: '/lectures'
+      fullPath: '/timetable/lectures'
+      preLoaderRoute: typeof TimetableLecturesRouteImport
+      parentRoute: typeof TimetableRoute
+    }
+    '/timetable/exams': {
+      id: '/timetable/exams'
+      path: '/exams'
+      fullPath: '/timetable/exams'
+      preLoaderRoute: typeof TimetableExamsRouteImport
+      parentRoute: typeof TimetableRoute
+    }
+    '/quizzes/$id': {
+      id: '/quizzes/$id'
+      path: '/$id'
+      fullPath: '/quizzes/$id'
+      preLoaderRoute: typeof QuizzesIdRouteImport
+      parentRoute: typeof QuizzesRoute
+    }
+    '/departments/$slug': {
+      id: '/departments/$slug'
+      path: '/$slug'
+      fullPath: '/departments/$slug'
+      preLoaderRoute: typeof DepartmentsSlugRouteImport
+      parentRoute: typeof DepartmentsRoute
+    }
+    '/courses/$code': {
+      id: '/courses/$code'
+      path: '/$code'
+      fullPath: '/courses/$code'
+      preLoaderRoute: typeof CoursesCodeRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/announcements/$slug': {
+      id: '/announcements/$slug'
+      path: '/$slug'
+      fullPath: '/announcements/$slug'
+      preLoaderRoute: typeof AnnouncementsSlugRouteImport
+      parentRoute: typeof AnnouncementsRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/timetable': {
+      id: '/admin/timetable'
+      path: '/timetable'
+      fullPath: '/admin/timetable'
+      preLoaderRoute: typeof AdminTimetableRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/resources': {
+      id: '/admin/resources'
+      path: '/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AdminResourcesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/quizzes': {
+      id: '/admin/quizzes'
+      path: '/quizzes'
+      fullPath: '/admin/quizzes'
+      preLoaderRoute: typeof AdminQuizzesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/departments': {
+      id: '/admin/departments'
+      path: '/departments'
+      fullPath: '/admin/departments'
+      preLoaderRoute: typeof AdminDepartmentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses': {
+      id: '/admin/courses'
+      path: '/courses'
+      fullPath: '/admin/courses'
+      preLoaderRoute: typeof AdminCoursesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/calendar': {
+      id: '/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AdminCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
+  AdminCalendarRoute: typeof AdminCalendarRoute
+  AdminCoursesRoute: typeof AdminCoursesRoute
+  AdminDepartmentsRoute: typeof AdminDepartmentsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminQuizzesRoute: typeof AdminQuizzesRoute
+  AdminResourcesRoute: typeof AdminResourcesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTimetableRoute: typeof AdminTimetableRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
+  AdminCalendarRoute: AdminCalendarRoute,
+  AdminCoursesRoute: AdminCoursesRoute,
+  AdminDepartmentsRoute: AdminDepartmentsRoute,
+  AdminEventsRoute: AdminEventsRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
+  AdminQuizzesRoute: AdminQuizzesRoute,
+  AdminResourcesRoute: AdminResourcesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminTimetableRoute: AdminTimetableRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface AnnouncementsRouteChildren {
+  AnnouncementsSlugRoute: typeof AnnouncementsSlugRoute
+}
+
+const AnnouncementsRouteChildren: AnnouncementsRouteChildren = {
+  AnnouncementsSlugRoute: AnnouncementsSlugRoute,
+}
+
+const AnnouncementsRouteWithChildren = AnnouncementsRoute._addFileChildren(
+  AnnouncementsRouteChildren,
+)
+
+interface CoursesRouteChildren {
+  CoursesCodeRoute: typeof CoursesCodeRoute
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesCodeRoute: CoursesCodeRoute,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
+
+interface DepartmentsRouteChildren {
+  DepartmentsSlugRoute: typeof DepartmentsSlugRoute
+}
+
+const DepartmentsRouteChildren: DepartmentsRouteChildren = {
+  DepartmentsSlugRoute: DepartmentsSlugRoute,
+}
+
+const DepartmentsRouteWithChildren = DepartmentsRoute._addFileChildren(
+  DepartmentsRouteChildren,
+)
+
+interface QuizzesRouteChildren {
+  QuizzesIdRoute: typeof QuizzesIdRoute
+}
+
+const QuizzesRouteChildren: QuizzesRouteChildren = {
+  QuizzesIdRoute: QuizzesIdRoute,
+}
+
+const QuizzesRouteWithChildren =
+  QuizzesRoute._addFileChildren(QuizzesRouteChildren)
+
+interface TimetableRouteChildren {
+  TimetableExamsRoute: typeof TimetableExamsRoute
+  TimetableLecturesRoute: typeof TimetableLecturesRoute
+}
+
+const TimetableRouteChildren: TimetableRouteChildren = {
+  TimetableExamsRoute: TimetableExamsRoute,
+  TimetableLecturesRoute: TimetableLecturesRoute,
+}
+
+const TimetableRouteWithChildren = TimetableRoute._addFileChildren(
+  TimetableRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AnnouncementsRoute: AnnouncementsRouteWithChildren,
+  AuthRoute: AuthRoute,
+  CalendarRoute: CalendarRoute,
+  ContactRoute: ContactRoute,
+  CoursesRoute: CoursesRouteWithChildren,
+  DepartmentsRoute: DepartmentsRouteWithChildren,
+  EventsRoute: EventsRoute,
+  GalleryRoute: GalleryRoute,
+  QuizzesRoute: QuizzesRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SearchRoute: SearchRoute,
+  TimetableRoute: TimetableRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
