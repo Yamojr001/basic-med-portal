@@ -33,6 +33,7 @@ import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
 import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminDepartmentsRouteImport } from './routes/admin.departments'
 import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
 import { Route as AdminCalendarRouteImport } from './routes/admin.calendar'
@@ -158,6 +159,11 @@ const AdminResourcesRoute = AdminResourcesRouteImport.update({
   path: '/resources',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDepartmentsRoute = AdminDepartmentsRouteImport.update({
   id: '/departments',
   path: '/departments',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -259,6 +267,7 @@ export interface FileRoutesById {
   '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -291,6 +300,7 @@ export interface FileRouteTypes {
     | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
+    | '/admin/events'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
+    | '/admin/events'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -350,6 +361,7 @@ export interface FileRouteTypes {
     | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
+    | '/admin/events'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -549,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourcesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/departments': {
       id: '/admin/departments'
       path: '/departments'
@@ -585,6 +604,7 @@ interface AdminRouteChildren {
   AdminCalendarRoute: typeof AdminCalendarRoute
   AdminCoursesRoute: typeof AdminCoursesRoute
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
   AdminTimetableRoute: typeof AdminTimetableRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -595,6 +615,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCalendarRoute: AdminCalendarRoute,
   AdminCoursesRoute: AdminCoursesRoute,
   AdminDepartmentsRoute: AdminDepartmentsRoute,
+  AdminEventsRoute: AdminEventsRoute,
   AdminResourcesRoute: AdminResourcesRoute,
   AdminTimetableRoute: AdminTimetableRoute,
   AdminIndexRoute: AdminIndexRoute,
