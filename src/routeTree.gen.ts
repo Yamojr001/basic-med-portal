@@ -32,6 +32,7 @@ import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
 import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
 import { Route as AdminQuizzesRouteImport } from './routes/admin.quizzes'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
@@ -156,6 +157,11 @@ const AdminTimetableRoute = AdminTimetableRouteImport.update({
   path: '/timetable',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminResourcesRoute = AdminResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/quizzes'
     | '/admin/resources'
+    | '/admin/settings'
     | '/admin/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/quizzes'
     | '/admin/resources'
+    | '/admin/settings'
     | '/admin/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/admin/gallery'
     | '/admin/quizzes'
     | '/admin/resources'
+    | '/admin/settings'
     | '/admin/timetable'
     | '/announcements/$slug'
     | '/courses/$code'
@@ -578,6 +590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTimetableRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/resources': {
       id: '/admin/resources'
       path: '/resources'
@@ -646,6 +665,7 @@ interface AdminRouteChildren {
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminQuizzesRoute: typeof AdminQuizzesRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTimetableRoute: typeof AdminTimetableRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -659,6 +679,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminGalleryRoute: AdminGalleryRoute,
   AdminQuizzesRoute: AdminQuizzesRoute,
   AdminResourcesRoute: AdminResourcesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminTimetableRoute: AdminTimetableRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
