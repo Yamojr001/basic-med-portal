@@ -19,6 +19,7 @@ import { Route as TimetableLecturesRouteImport } from './routes/timetable.lectur
 import { Route as TimetableExamsRouteImport } from './routes/timetable.exams'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
+import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
 
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
@@ -70,14 +71,20 @@ const CoursesCodeRoute = CoursesCodeRouteImport.update({
   path: '/$code',
   getParentRoute: () => CoursesRoute,
 } as any)
+const AnnouncementsSlugRoute = AnnouncementsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AnnouncementsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
+  '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/timetable': typeof TimetableRouteWithChildren
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
   '/timetable/exams': typeof TimetableExamsRoute
@@ -85,11 +92,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
+  '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/timetable': typeof TimetableRouteWithChildren
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
   '/timetable/exams': typeof TimetableExamsRoute
@@ -98,11 +106,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
+  '/announcements': typeof AnnouncementsRouteWithChildren
   '/calendar': typeof CalendarRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
   '/timetable': typeof TimetableRouteWithChildren
+  '/announcements/$slug': typeof AnnouncementsSlugRoute
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
   '/timetable/exams': typeof TimetableExamsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/timetable'
+    | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
     | '/timetable/exams'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/timetable'
+    | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
     | '/timetable/exams'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/departments'
     | '/timetable'
+    | '/announcements/$slug'
     | '/courses/$code'
     | '/departments/$slug'
     | '/timetable/exams'
@@ -149,7 +161,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AnnouncementsRoute: typeof AnnouncementsRoute
+  AnnouncementsRoute: typeof AnnouncementsRouteWithChildren
   CalendarRoute: typeof CalendarRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
@@ -228,8 +240,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesCodeRouteImport
       parentRoute: typeof CoursesRoute
     }
+    '/announcements/$slug': {
+      id: '/announcements/$slug'
+      path: '/$slug'
+      fullPath: '/announcements/$slug'
+      preLoaderRoute: typeof AnnouncementsSlugRouteImport
+      parentRoute: typeof AnnouncementsRoute
+    }
   }
 }
+
+interface AnnouncementsRouteChildren {
+  AnnouncementsSlugRoute: typeof AnnouncementsSlugRoute
+}
+
+const AnnouncementsRouteChildren: AnnouncementsRouteChildren = {
+  AnnouncementsSlugRoute: AnnouncementsSlugRoute,
+}
+
+const AnnouncementsRouteWithChildren = AnnouncementsRoute._addFileChildren(
+  AnnouncementsRouteChildren,
+)
 
 interface CoursesRouteChildren {
   CoursesCodeRoute: typeof CoursesCodeRoute
@@ -270,7 +301,7 @@ const TimetableRouteWithChildren = TimetableRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AnnouncementsRoute: AnnouncementsRoute,
+  AnnouncementsRoute: AnnouncementsRouteWithChildren,
   CalendarRoute: CalendarRoute,
   CoursesRoute: CoursesRouteWithChildren,
   DepartmentsRoute: DepartmentsRouteWithChildren,
