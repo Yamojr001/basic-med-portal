@@ -13,6 +13,7 @@ import { Route as TimetableRouteImport } from './routes/timetable'
 import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TimetableLecturesRouteImport } from './routes/timetable.lectures'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TimetableLecturesRoute = TimetableLecturesRouteImport.update({
+  id: '/lectures',
+  path: '/lectures',
+  getParentRoute: () => TimetableRoute,
+} as any)
 const DepartmentsSlugRoute = DepartmentsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -51,26 +57,29 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
-  '/timetable': typeof TimetableRoute
+  '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
-  '/timetable': typeof TimetableRoute
+  '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/courses': typeof CoursesRouteWithChildren
   '/departments': typeof DepartmentsRouteWithChildren
-  '/timetable': typeof TimetableRoute
+  '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/lectures'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/lectures'
   id:
     | '__root__'
     | '/'
@@ -97,13 +108,14 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/lectures'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
-  TimetableRoute: typeof TimetableRoute
+  TimetableRoute: typeof TimetableRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -135,6 +147,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/timetable/lectures': {
+      id: '/timetable/lectures'
+      path: '/lectures'
+      fullPath: '/timetable/lectures'
+      preLoaderRoute: typeof TimetableLecturesRouteImport
+      parentRoute: typeof TimetableRoute
     }
     '/departments/$slug': {
       id: '/departments/$slug'
@@ -176,11 +195,23 @@ const DepartmentsRouteWithChildren = DepartmentsRoute._addFileChildren(
   DepartmentsRouteChildren,
 )
 
+interface TimetableRouteChildren {
+  TimetableLecturesRoute: typeof TimetableLecturesRoute
+}
+
+const TimetableRouteChildren: TimetableRouteChildren = {
+  TimetableLecturesRoute: TimetableLecturesRoute,
+}
+
+const TimetableRouteWithChildren = TimetableRoute._addFileChildren(
+  TimetableRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoursesRoute: CoursesRouteWithChildren,
   DepartmentsRoute: DepartmentsRouteWithChildren,
-  TimetableRoute: TimetableRoute,
+  TimetableRoute: TimetableRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
