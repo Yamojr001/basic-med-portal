@@ -35,6 +35,7 @@ import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
 import { Route as AdminDepartmentsRouteImport } from './routes/admin.departments'
 import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
+import { Route as AdminCalendarRouteImport } from './routes/admin.calendar'
 
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
@@ -166,6 +167,11 @@ const AdminCoursesRoute = AdminCoursesRouteImport.update({
   path: '/courses',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCalendarRoute = AdminCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/resources': typeof AdminResourcesRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/resources': typeof AdminResourcesRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
+  '/admin/calendar': typeof AdminCalendarRoute
   '/admin/courses': typeof AdminCoursesRoute
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/resources': typeof AdminResourcesRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/timetable'
+    | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
     | '/admin/resources'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/timetable'
+    | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
     | '/admin/resources'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/timetable'
+    | '/admin/calendar'
     | '/admin/courses'
     | '/admin/departments'
     | '/admin/resources'
@@ -539,10 +551,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoursesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/calendar': {
+      id: '/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AdminCalendarRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminCalendarRoute: typeof AdminCalendarRoute
   AdminCoursesRoute: typeof AdminCoursesRoute
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
@@ -551,6 +571,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCalendarRoute: AdminCalendarRoute,
   AdminCoursesRoute: AdminCoursesRoute,
   AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminResourcesRoute: AdminResourcesRoute,
