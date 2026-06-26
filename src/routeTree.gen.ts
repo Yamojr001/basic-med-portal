@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimetableRouteImport } from './routes/timetable'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QuizzesRouteImport } from './routes/quizzes'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
@@ -37,6 +38,11 @@ const TimetableRoute = TimetableRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuizzesRoute = QuizzesRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/quizzes': typeof QuizzesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/timetable': typeof TimetableRouteWithChildren
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/gallery'
     | '/quizzes'
+    | '/reset-password'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/gallery'
     | '/quizzes'
+    | '/reset-password'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/gallery'
     | '/quizzes'
+    | '/reset-password'
     | '/search'
     | '/timetable'
     | '/announcements/$slug'
@@ -267,6 +279,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
   QuizzesRoute: typeof QuizzesRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   TimetableRoute: typeof TimetableRouteWithChildren
 }
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quizzes': {
@@ -481,6 +501,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
   QuizzesRoute: QuizzesRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   TimetableRoute: TimetableRouteWithChildren,
 }
