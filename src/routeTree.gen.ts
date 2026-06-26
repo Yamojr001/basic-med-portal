@@ -33,6 +33,7 @@ import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 import { Route as AnnouncementsSlugRouteImport } from './routes/announcements.$slug'
 import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
+import { Route as AdminQuizzesRouteImport } from './routes/admin.quizzes'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminDepartmentsRouteImport } from './routes/admin.departments'
@@ -160,6 +161,11 @@ const AdminResourcesRoute = AdminResourcesRouteImport.update({
   path: '/resources',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminQuizzesRoute = AdminQuizzesRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/timetable': typeof AdminTimetableRoute
   '/announcements/$slug': typeof AnnouncementsSlugRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -374,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/timetable'
     | '/announcements/$slug'
@@ -573,6 +585,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourcesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/quizzes': {
+      id: '/admin/quizzes'
+      path: '/quizzes'
+      fullPath: '/admin/quizzes'
+      preLoaderRoute: typeof AdminQuizzesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/gallery': {
       id: '/admin/gallery'
       path: '/gallery'
@@ -625,6 +644,7 @@ interface AdminRouteChildren {
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminEventsRoute: typeof AdminEventsRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminQuizzesRoute: typeof AdminQuizzesRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
   AdminTimetableRoute: typeof AdminTimetableRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -637,6 +657,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminEventsRoute: AdminEventsRoute,
   AdminGalleryRoute: AdminGalleryRoute,
+  AdminQuizzesRoute: AdminQuizzesRoute,
   AdminResourcesRoute: AdminResourcesRoute,
   AdminTimetableRoute: AdminTimetableRoute,
   AdminIndexRoute: AdminIndexRoute,
