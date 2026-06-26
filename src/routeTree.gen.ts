@@ -14,6 +14,7 @@ import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TimetableLecturesRouteImport } from './routes/timetable.lectures'
+import { Route as TimetableExamsRouteImport } from './routes/timetable.exams'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as CoursesCodeRouteImport } from './routes/courses.$code'
 
@@ -42,6 +43,11 @@ const TimetableLecturesRoute = TimetableLecturesRouteImport.update({
   path: '/lectures',
   getParentRoute: () => TimetableRoute,
 } as any)
+const TimetableExamsRoute = TimetableExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => TimetableRoute,
+} as any)
 const DepartmentsSlugRoute = DepartmentsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/timetable': typeof TimetableRouteWithChildren
   '/courses/$code': typeof CoursesCodeRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
+  '/timetable/exams': typeof TimetableExamsRoute
   '/timetable/lectures': typeof TimetableLecturesRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/exams'
     | '/timetable/lectures'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/exams'
     | '/timetable/lectures'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/timetable'
     | '/courses/$code'
     | '/departments/$slug'
+    | '/timetable/exams'
     | '/timetable/lectures'
   fileRoutesById: FileRoutesById
 }
@@ -155,6 +167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimetableLecturesRouteImport
       parentRoute: typeof TimetableRoute
     }
+    '/timetable/exams': {
+      id: '/timetable/exams'
+      path: '/exams'
+      fullPath: '/timetable/exams'
+      preLoaderRoute: typeof TimetableExamsRouteImport
+      parentRoute: typeof TimetableRoute
+    }
     '/departments/$slug': {
       id: '/departments/$slug'
       path: '/$slug'
@@ -196,10 +215,12 @@ const DepartmentsRouteWithChildren = DepartmentsRoute._addFileChildren(
 )
 
 interface TimetableRouteChildren {
+  TimetableExamsRoute: typeof TimetableExamsRoute
   TimetableLecturesRoute: typeof TimetableLecturesRoute
 }
 
 const TimetableRouteChildren: TimetableRouteChildren = {
+  TimetableExamsRoute: TimetableExamsRoute,
   TimetableLecturesRoute: TimetableLecturesRoute,
 }
 
