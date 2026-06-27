@@ -30,7 +30,7 @@ function Page() {
     { key: "email", label: "Email" },
     { key: "phone", label: "Phone" },
     { key: "office", label: "Office" },
-    { key: "image_url", label: "Photo URL", fullWidth: true },
+    { key: "image_url", label: "Photo", type: "image", bucket: "lecturers", uploadFolder: "photos", fullWidth: true, placeholder: "Paste an image URL or upload below" },
     { key: "bio", label: "Brief bio", type: "textarea", fullWidth: true },
     { key: "sort_order", label: "Sort order", type: "number" },
     { key: "is_published", label: "Published", type: "boolean", placeholder: "Visible on site" },
