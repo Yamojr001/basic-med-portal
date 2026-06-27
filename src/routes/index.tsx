@@ -19,6 +19,7 @@ import {
   calendarQuery,
   departmentsQuery,
   eventsQuery,
+  homeCountsQuery,
   settingsQuery,
 } from "@/lib/queries";
 
@@ -45,18 +46,19 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(announcementsQuery(4)),
       context.queryClient.ensureQueryData(calendarQuery),
       context.queryClient.ensureQueryData(eventsQuery),
+      context.queryClient.ensureQueryData(homeCountsQuery),
     ]);
   },
   component: Index,
 });
 
 const QUICK = [
-  { to: "/departments", label: "Departments", icon: Microscope },
-  { to: "/courses", label: "Courses", icon: BookOpen },
-  { to: "/timetable/lectures", label: "Timetable", icon: ClipboardList },
-  { to: "/calendar", label: "Calendar", icon: Calendar },
-  { to: "/announcements", label: "Announcements", icon: Megaphone },
-  { to: "/quizzes", label: "Quizzes", icon: GraduationCap },
+  { to: "/departments", label: "Departments", icon: Microscope, countKey: "departments" },
+  { to: "/courses", label: "Courses", icon: BookOpen, countKey: "courses" },
+  { to: "/timetable/lectures", label: "Timetable", icon: ClipboardList, countKey: "timetable" },
+  { to: "/calendar", label: "Calendar", icon: Calendar, countKey: "calendar" },
+  { to: "/announcements", label: "Announcements", icon: Megaphone, countKey: "announcements" },
+  { to: "/quizzes", label: "Quizzes", icon: GraduationCap, countKey: "quizzes" },
 ] as const;
 
 function Index() {
@@ -65,6 +67,7 @@ function Index() {
   const { data: announcements } = useSuspenseQuery(announcementsQuery(4));
   const { data: calendar } = useSuspenseQuery(calendarQuery);
   const { data: events } = useSuspenseQuery(eventsQuery);
+  const { data: counts } = useSuspenseQuery(homeCountsQuery);
 
   const upcomingCalendar = (calendar ?? []).filter((c) => new Date(c.start_date) >= new Date(Date.now() - 86400000)).slice(0, 4);
   const upcomingEvents = (events ?? []).filter((e) => new Date(e.event_date) >= new Date(Date.now() - 86400000)).slice(0, 3);
@@ -135,7 +138,7 @@ function Index() {
                 <q.icon className="h-5 w-5 text-[var(--medical)]" />
                 <p className="mt-6 text-sm font-semibold text-foreground">{q.label}</p>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  0{QUICK.indexOf(q) + 1}
+                  {counts[q.countKey]} {counts[q.countKey] === 1 ? "item" : "items"}
                 </p>
               </Link>
             </motion.div>
@@ -289,10 +292,10 @@ function Index() {
       {/* STATS */}
       <section className="border-y bg-card">
         <div className="mx-auto max-w-7xl px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
-          <Stat value={String(departments.length)} label="Departments" tone="navy" />
-          <Stat value="2,400+" label="Enrolled students" tone="medical" />
-          <Stat value="48" label="Academic staff" tone="emerald" />
-          <Stat value="100%" label="NUC accreditation" tone="navy" />
+          <Stat value={String(counts.departments)} label="Departments" tone="navy" />
+          <Stat value={String(counts.courses)} label="Courses" tone="medical" />
+          <Stat value={String(counts.timetable)} label="Timetable entries" tone="emerald" />
+          <Stat value={String(counts.announcements)} label="Announcements" tone="navy" />
         </div>
       </section>
     </SiteLayout>
