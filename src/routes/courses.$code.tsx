@@ -47,7 +47,7 @@ function CourseDetail() {
         href = data?.signedUrl ?? "";
       }
       if (!href) throw new Error("File unavailable");
-      await supabase.rpc("increment_resource_download", { _resource_id: r.id });
+      await incrementResourceDownload({ data: { resource_id: r.id } });
       const a = document.createElement("a");
       a.href = href;
       a.target = "_blank";
