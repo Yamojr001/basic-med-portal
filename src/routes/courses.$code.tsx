@@ -5,6 +5,7 @@ import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { Download, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { incrementResourceDownload } from "@/lib/quiz.functions";
 
 export const Route = createFileRoute("/courses/$code")({
   loader: async ({ context, params }) => {
