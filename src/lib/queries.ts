@@ -211,7 +211,11 @@ export const quizDetailQuery = (id: string) =>
           .select("*, course:courses(code,title), department:departments(name)")
           .eq("id", id)
           .maybeSingle(),
-        supabase.from("quiz_questions").select("*").eq("quiz_id", id).order("sort_order"),
+        supabase
+          .from("quiz_questions_public" as never)
+          .select("id,quiz_id,question_type,question_text,options,points,sort_order")
+          .eq("quiz_id", id)
+          .order("sort_order"),
       ]);
       if (e1) throw e1;
       if (e2) throw e2;
