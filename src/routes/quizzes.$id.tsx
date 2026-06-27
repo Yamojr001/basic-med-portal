@@ -3,8 +3,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { quizDetailQuery } from "@/lib/queries";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { submitQuizAttempt } from "@/lib/quiz.functions";
 
 export const Route = createFileRoute("/quizzes/$id")({
   loader: async ({ context, params }) => {
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/quizzes/$id")({
   component: QuizPage,
 });
 
-type Question = { id: string; question_type: string; question_text: string; options: unknown; correct_answer: string; points: number };
+type Question = { id: string; question_type: string; question_text: string; options: unknown; points: number };
 
 function QuizPage() {
   const { id } = Route.useParams();
@@ -33,27 +33,18 @@ function QuizPage() {
   const [submitted, setSubmitted] = useState<null | { score: number; total: number; percentage: number; passed: boolean }>(null);
 
   async function submit() {
-    let score = 0;
-    let total = 0;
-    for (const q of questions) {
-      total += q.points;
-      const given = (answers[q.id] ?? "").trim().toLowerCase();
-      const correct = q.correct_answer.trim().toLowerCase();
-      if (given && given === correct) score += q.points;
-    }
-    const percentage = total > 0 ? Math.round((score / total) * 100 * 100) / 100 : 0;
-    const passed = percentage >= quiz.passing_score;
-    setSubmitted({ score, total, percentage, passed });
     try {
-      await supabase.from("quiz_attempts").insert({
-        quiz_id: quiz.id,
-        student_name: name || null,
-        matric_number: matric || null,
-        score, total_points: total, percentage, passed,
-        answers,
+      const result = await submitQuizAttempt({
+        data: {
+          quiz_id: quiz.id,
+          student_name: name || null,
+          matric_number: matric || null,
+          answers,
+        },
       });
+      setSubmitted(result);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Could not save attempt");
+      toast.error(e instanceof Error ? e.message : "Could not submit quiz");
     }
   }
 
@@ -66,12 +57,10 @@ function QuizPage() {
           <h2 className="font-semibold mt-6">Review</h2>
           {questions.map((q, idx) => {
             const given = (answers[q.id] ?? "").trim();
-            const ok = given.toLowerCase() === q.correct_answer.trim().toLowerCase();
             return (
               <div key={q.id} className="rounded-2xl border bg-card p-5">
                 <p className="font-semibold">{idx + 1}. {q.question_text}</p>
-                <p className="mt-2 text-sm">Your answer: <span className={ok ? "text-[var(--emerald)]" : "text-destructive"}>{given || "—"}</span></p>
-                {!ok ? <p className="text-sm">Correct: <span className="text-[var(--emerald)]">{q.correct_answer}</span></p> : null}
+                <p className="mt-2 text-sm">Your answer: <span className="text-foreground">{given || "—"}</span></p>
               </div>
             );
           })}
