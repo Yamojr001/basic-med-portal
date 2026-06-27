@@ -5,6 +5,7 @@ import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { Download, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { incrementResourceDownload } from "@/lib/quiz.functions";
 
 export const Route = createFileRoute("/courses/$code")({
   loader: async ({ context, params }) => {
@@ -47,7 +48,7 @@ function CourseDetail() {
         href = data?.signedUrl ?? "";
       }
       if (!href) throw new Error("File unavailable");
-      await supabase.rpc("increment_resource_download", { _resource_id: r.id });
+      await incrementResourceDownload({ data: { resource_id: r.id } });
       const a = document.createElement("a");
       a.href = href;
       a.target = "_blank";
