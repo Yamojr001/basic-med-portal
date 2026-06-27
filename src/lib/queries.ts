@@ -1,6 +1,34 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+async function countOf(table: string) {
+  const { count, error } = await supabase.from(table as never).select("*", { count: "exact", head: true });
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export const homeCountsQuery = queryOptions({
+  queryKey: ["home_counts"],
+  queryFn: async () => {
+    const [departments, courses, lectures, exams, announcements, quizzes] = await Promise.all([
+      countOf("departments"),
+      countOf("courses"),
+      countOf("lecture_timetable"),
+      countOf("exam_timetable"),
+      countOf("announcements"),
+      countOf("quizzes"),
+    ]);
+    return {
+      departments,
+      courses,
+      timetable: lectures + exams,
+      announcements,
+      quizzes,
+      calendar: await countOf("academic_calendar"),
+    };
+  },
+});
+
 export const settingsQuery = queryOptions({
   queryKey: ["site_settings"],
   queryFn: async () => {
