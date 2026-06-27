@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const NAV = [
   { to: "/departments", label: "Departments" },
   { to: "/courses", label: "Courses" },
+  { to: "/lecturers", label: "Lecturers" },
   { to: "/timetable/lectures", label: "Timetable" },
   { to: "/calendar", label: "Calendar" },
   { to: "/announcements", label: "Announcements" },

@@ -353,6 +353,71 @@ export type Database = {
           },
         ]
       }
+      lecturers: {
+        Row: {
+          bio: string | null
+          created_at: string
+          department_id: string | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          name: string
+          office: string | null
+          phone: string | null
+          position: string | null
+          qualifications: string | null
+          sort_order: number
+          specialization: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          department_id?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          name: string
+          office?: string | null
+          phone?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sort_order?: number
+          specialization?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          department_id?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          name?: string
+          office?: string | null
+          phone?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sort_order?: number
+          specialization?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lecturers_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_attempts: {
         Row: {
           answers: Json | null

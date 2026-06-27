@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, BookOpen, FileBox, Calendar, ClipboardList,
-  Megaphone, CalendarClock, GraduationCap, Users, Settings, LogOut, ImageIcon,
+  Megaphone, CalendarClock, GraduationCap, Users, Settings, LogOut, ImageIcon, UserSquare2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/lib/use-admin";
@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { to: "/admin/announcements", label: "Announcements", icon: Megaphone },
   { to: "/admin/events", label: "Events", icon: CalendarClock },
   { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
+  { to: "/admin/lecturers", label: "Lecturers", icon: UserSquare2 },
   { to: "/admin/quizzes", label: "Quizzes", icon: GraduationCap },
   { to: "/admin/users", label: "Admins", icon: Users },
   { to: "/admin/settings", label: "Settings", icon: Settings },

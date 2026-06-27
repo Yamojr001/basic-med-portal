@@ -190,6 +190,34 @@ export const galleryQuery = queryOptions({
   },
 });
 
+export const lecturersQuery = queryOptions({
+  queryKey: ["lecturers"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("lecturers" as never)
+      .select("*, department:departments(name,slug,code)")
+      .eq("is_published", true)
+      .order("sort_order")
+      .order("name");
+    if (error) throw error;
+    return (data ?? []) as Array<{
+      id: string;
+      name: string;
+      title: string | null;
+      position: string | null;
+      department_id: string | null;
+      qualifications: string | null;
+      specialization: string | null;
+      bio: string | null;
+      email: string | null;
+      phone: string | null;
+      office: string | null;
+      image_url: string | null;
+      department: { name: string; slug: string; code: string | null } | null;
+    }>;
+  },
+});
+
 export const lectureTimetableQuery = queryOptions({
   queryKey: ["lecture_timetable"],
   queryFn: async () => {
