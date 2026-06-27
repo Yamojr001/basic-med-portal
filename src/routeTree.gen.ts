@@ -13,6 +13,7 @@ import { Route as TimetableRouteImport } from './routes/timetable'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QuizzesRouteImport } from './routes/quizzes'
+import { Route as LecturersRouteImport } from './routes/lecturers'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DepartmentsRouteImport } from './routes/departments'
@@ -36,6 +37,7 @@ import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
 import { Route as AdminQuizzesRouteImport } from './routes/admin.quizzes'
+import { Route as AdminLecturersRouteImport } from './routes/admin.lecturers'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminDepartmentsRouteImport } from './routes/admin.departments'
@@ -61,6 +63,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const QuizzesRoute = QuizzesRouteImport.update({
   id: '/quizzes',
   path: '/quizzes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LecturersRoute = LecturersRouteImport.update({
+  id: '/lecturers',
+  path: '/lecturers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -178,6 +185,11 @@ const AdminQuizzesRoute = AdminQuizzesRouteImport.update({
   path: '/quizzes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLecturersRoute = AdminLecturersRouteImport.update({
+  id: '/lecturers',
+  path: '/lecturers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -221,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/lecturers': typeof LecturersRoute
   '/quizzes': typeof QuizzesRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -231,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/lecturers': typeof AdminLecturersRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -255,6 +269,7 @@ export interface FileRoutesByTo {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/lecturers': typeof LecturersRoute
   '/quizzes': typeof QuizzesRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -265,6 +280,7 @@ export interface FileRoutesByTo {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/lecturers': typeof AdminLecturersRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -291,6 +307,7 @@ export interface FileRoutesById {
   '/departments': typeof DepartmentsRouteWithChildren
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/lecturers': typeof LecturersRoute
   '/quizzes': typeof QuizzesRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -301,6 +318,7 @@ export interface FileRoutesById {
   '/admin/departments': typeof AdminDepartmentsRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/lecturers': typeof AdminLecturersRoute
   '/admin/quizzes': typeof AdminQuizzesRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -328,6 +346,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/lecturers'
     | '/quizzes'
     | '/reset-password'
     | '/search'
@@ -338,6 +357,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/lecturers'
     | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/settings'
@@ -362,6 +382,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/lecturers'
     | '/quizzes'
     | '/reset-password'
     | '/search'
@@ -372,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/lecturers'
     | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/settings'
@@ -397,6 +419,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/events'
     | '/gallery'
+    | '/lecturers'
     | '/quizzes'
     | '/reset-password'
     | '/search'
@@ -407,6 +430,7 @@ export interface FileRouteTypes {
     | '/admin/departments'
     | '/admin/events'
     | '/admin/gallery'
+    | '/admin/lecturers'
     | '/admin/quizzes'
     | '/admin/resources'
     | '/admin/settings'
@@ -433,6 +457,7 @@ export interface RootRouteChildren {
   DepartmentsRoute: typeof DepartmentsRouteWithChildren
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  LecturersRoute: typeof LecturersRoute
   QuizzesRoute: typeof QuizzesRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
@@ -467,6 +492,13 @@ declare module '@tanstack/react-router' {
       path: '/quizzes'
       fullPath: '/quizzes'
       preLoaderRoute: typeof QuizzesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lecturers': {
+      id: '/lecturers'
+      path: '/lecturers'
+      fullPath: '/lecturers'
+      preLoaderRoute: typeof LecturersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -630,6 +662,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminQuizzesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/lecturers': {
+      id: '/admin/lecturers'
+      path: '/lecturers'
+      fullPath: '/admin/lecturers'
+      preLoaderRoute: typeof AdminLecturersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/gallery': {
       id: '/admin/gallery'
       path: '/gallery'
@@ -682,6 +721,7 @@ interface AdminRouteChildren {
   AdminDepartmentsRoute: typeof AdminDepartmentsRoute
   AdminEventsRoute: typeof AdminEventsRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminLecturersRoute: typeof AdminLecturersRoute
   AdminQuizzesRoute: typeof AdminQuizzesRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -697,6 +737,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDepartmentsRoute: AdminDepartmentsRoute,
   AdminEventsRoute: AdminEventsRoute,
   AdminGalleryRoute: AdminGalleryRoute,
+  AdminLecturersRoute: AdminLecturersRoute,
   AdminQuizzesRoute: AdminQuizzesRoute,
   AdminResourcesRoute: AdminResourcesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
@@ -779,6 +820,7 @@ const rootRouteChildren: RootRouteChildren = {
   DepartmentsRoute: DepartmentsRouteWithChildren,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  LecturersRoute: LecturersRoute,
   QuizzesRoute: QuizzesRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
