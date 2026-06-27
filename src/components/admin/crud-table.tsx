@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Pencil, Trash2, Plus, Save, X } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, X, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
 export type Field = {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "date" | "select" | "boolean";
+  type?: "text" | "textarea" | "number" | "date" | "select" | "boolean" | "image";
   options?: { value: string; label: string }[];
   required?: boolean;
   fullWidth?: boolean;
   placeholder?: string;
+  /** For type: "image" — storage bucket to upload to. */
+  bucket?: string;
+  /** For type: "image" — folder prefix inside the bucket. */
+  uploadFolder?: string;
 };
 
 export function CrudTable<T extends { id: string } & Record<string, unknown>>({
@@ -162,6 +166,14 @@ export function FormCard({
                 <input type="checkbox" checked={!!values[f.key]} onChange={(e) => set(f.key, e.target.checked)} />
                 {f.placeholder ?? "Yes"}
               </label>
+            ) : f.type === "image" ? (
+              <ImageField
+                value={(values[f.key] as string) ?? ""}
+                onChange={(v) => set(f.key, v)}
+                bucket={f.bucket ?? "lecturers"}
+                folder={f.uploadFolder}
+                placeholder={f.placeholder}
+              />
             ) : (
               <input
                 type={f.type === "number" ? "number" : f.type === "date" ? "date" : "text"}
@@ -177,6 +189,71 @@ export function FormCard({
       <div className="mt-4 flex justify-end gap-2">
         <button onClick={onCancel} className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm"><X className="h-4 w-4"/>Cancel</button>
         <button onClick={() => onSave(values)} className="inline-flex items-center gap-1 rounded-lg bg-[var(--medical)] px-3 py-1.5 text-sm text-white"><Save className="h-4 w-4"/>Save</button>
+      </div>
+    </div>
+  );
+}
+
+function ImageField({
+  value, onChange, bucket, folder, placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  bucket: string;
+  folder?: string;
+  placeholder?: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  async function handleFile(file: File) {
+    if (!file) return;
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${folder ? folder.replace(/\/$/, "") + "/" : ""}${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data, error: sErr } = await supabase.storage.from(bucket).createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (sErr || !data?.signedUrl) throw sErr ?? new Error("Failed to sign URL");
+      onChange(data.signedUrl);
+      toast.success("Image uploaded");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="mt-1 space-y-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder ?? "Paste an image URL"}
+        className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+      />
+      <div className="flex items-center gap-3">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted">
+          <UploadCloud className="h-3.5 w-3.5" />
+          {busy ? "Uploading…" : "Upload image"}
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={busy}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleFile(f);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        {value ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={value} alt="Preview" className="h-12 w-12 rounded-md border object-cover" />
+            <button type="button" onClick={() => onChange("")} className="text-xs text-muted-foreground hover:text-destructive">Remove</button>
+          </>
+        ) : null}
       </div>
     </div>
   );
