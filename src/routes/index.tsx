@@ -26,13 +26,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Faculty of Basic Medical Sciences — Federal University Dutse" },
+      { title: "Department of Anatomy — Federal University Dutse" },
       {
         name: "description",
         content:
-          "Official portal of FBMS, Federal University Dutse — course materials, timetables, announcements, calendar and quizzes.",
+          "Official portal of Department of Anatomy, Federal University Dutse — course materials, timetables, announcements, calendar and quizzes.",
       },
-      { property: "og:title", content: "FBMS — Federal University Dutse" },
+      { property: "og:title", content: "Department of Anatomy — Federal University Dutse" },
       {
         property: "og:description",
         content: "The academic home of basic medical sciences at FUD.",
@@ -101,7 +101,7 @@ function Index() {
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/70">
               {settings?.about ??
-                "The Faculty of Basic Medical Sciences at FUD provides the foundational knowledge and research excellence required for the next generation of healthcare leaders."}
+                "The Department of Anatomy at FUD provides the foundational knowledge and research excellence required for the next generation of healthcare leaders."}
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link

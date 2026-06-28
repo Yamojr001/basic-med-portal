@@ -47,7 +47,7 @@ function Dashboard() {
 
   return (
     <>
-      <AdminHeader title="Dashboard" description="Overview of faculty content and engagement." />
+      <AdminHeader title="Dashboard" description="Overview of department content and engagement." />
       <div className="p-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl border bg-card p-6 shadow-soft">

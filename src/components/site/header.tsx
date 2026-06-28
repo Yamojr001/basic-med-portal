@@ -28,7 +28,7 @@ export function SiteHeader() {
               Federal University Dutse
             </span>
             <span className="text-sm font-semibold text-foreground">
-              Faculty of Basic Medical Sciences
+              Department of Anatomy
             </span>
           </div>
         </Link>

@@ -17,7 +17,7 @@ const FIELDS: Field[] = [
 function Page() {
   return (
     <>
-      <AdminHeader title="Departments" description="Manage the nine faculty departments." />
+      <AdminHeader title="Departments" description="Manage the department details." />
       <CrudTable
         table="departments"
         queryKey={["admin", "departments"]}

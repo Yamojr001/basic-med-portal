@@ -5,7 +5,7 @@ import { calendarQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({ meta: [
-    { title: "Academic Calendar — FBMS, FUD" },
+    { title: "Academic Calendar — Anatomy, FUD" },
     { name: "description", content: "Registration, lectures, exams, breaks and result release dates." },
   ]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(calendarQuery),

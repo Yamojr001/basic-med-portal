@@ -37,11 +37,11 @@ function Page() {
   ];
   return (
     <>
-      <AdminHeader title="Lecturers" description="Faculty staff profiles shown on the public Lecturers page." />
+      <AdminHeader title="Lecturers" description="Department staff profiles shown on the public Lecturers page." />
       <CrudTable
         table="lecturers"
         queryKey={["admin", "lecturers"]}
-        title="Faculty lecturers"
+        title="Department lecturers"
         orderBy="sort_order"
         ascending
         defaults={{ is_published: true, sort_order: 0 }}

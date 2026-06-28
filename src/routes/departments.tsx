@@ -7,9 +7,9 @@ import { ArrowRight } from "lucide-react";
 export const Route = createFileRoute("/departments")({
   head: () => ({
     meta: [
-      { title: "Departments — FBMS, FUD" },
-      { name: "description", content: "Browse the nine departments of the Faculty of Basic Medical Sciences, Federal University Dutse." },
-      { property: "og:title", content: "Departments — FBMS, FUD" },
+      { title: "Departments — Anatomy, FUD" },
+      { name: "description", content: "The Department of Anatomy, Federal University Dutse." },
+      { property: "og:title", content: "Departments — Anatomy, FUD" },
       { property: "og:description", content: "Nine specialised departments of basic medical sciences at FUD." },
     ],
   }),

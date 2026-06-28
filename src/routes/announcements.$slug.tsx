@@ -11,7 +11,7 @@ export const Route = createFileRoute("/announcements/$slug")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.a?.title ?? "Announcement"} — FBMS, FUD` },
+      { title: `${loaderData?.a?.title ?? "Announcement"} — Anatomy, FUD` },
       { name: "description", content: (loaderData?.a?.body ?? "").slice(0, 160) },
     ],
   }),

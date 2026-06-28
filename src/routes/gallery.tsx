@@ -4,7 +4,7 @@ import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { galleryQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/gallery")({
-  head: () => ({ meta: [{ title: "Gallery — FBMS, FUD" }, { name: "description", content: "Faculty gallery — laboratories, events and student life." }]}),
+  head: () => ({ meta: [{ title: "Gallery — Anatomy, FUD" }, { name: "description", content: "Department gallery — laboratories, events and student life." }]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(galleryQuery),
   component: Gallery,
 });

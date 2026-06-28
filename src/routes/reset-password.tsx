@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/site/layout";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset password — FBMS, FUD" }, { name: "robots", content: "noindex" }]}),
+  head: () => ({ meta: [{ title: "Reset password — Anatomy, FUD" }, { name: "robots", content: "noindex" }]}),
   component: Reset,
 });
 function Reset() {

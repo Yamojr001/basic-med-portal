@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/site/layout";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Administrator Login — FBMS, FUD" }, { name: "description", content: "Sign in to the FBMS admin dashboard." }, { name: "robots", content: "noindex" }]}),
+  head: () => ({ meta: [{ title: "Administrator Login — Anatomy, FUD" }, { name: "description", content: "Sign in to the Department of Anatomy admin dashboard." }, { name: "robots", content: "noindex" }]}),
   component: Auth,
 });
 
@@ -68,7 +68,7 @@ function Auth() {
             {mode === "signup" ? "Create admin account" : mode === "forgot" ? "Reset password" : "Administrator login"}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {mode === "signup" ? "Only verified admins gain dashboard access." : mode === "forgot" ? "We will email you a reset link." : "Sign in to manage the faculty portal."}
+            {mode === "signup" ? "Only verified admins gain dashboard access." : mode === "forgot" ? "We will email you a reset link." : "Sign in to manage the department portal."}
           </p>
           <div className="mt-6 space-y-3">
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" className="w-full rounded-xl border bg-background px-4 py-3 text-sm" />

@@ -7,7 +7,7 @@ import { Printer } from "lucide-react";
 
 export const Route = createFileRoute("/timetable/exams")({
   head: () => ({ meta: [
-    { title: "Examination Timetable — FBMS, FUD" },
+    { title: "Examination Timetable — Anatomy, FUD" },
     { name: "description", content: "Examination timetable across departments and levels." },
   ]}),
   loader: async ({ context }) => {

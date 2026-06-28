@@ -7,13 +7,13 @@ import { lecturersQuery } from "@/lib/queries";
 export const Route = createFileRoute("/lecturers")({
   head: () => ({
     meta: [
-      { title: "Lecturers — FBMS, FUD" },
+      { title: "Lecturers — Anatomy, FUD" },
       {
         name: "description",
         content:
-          "Meet the lecturers of the Faculty of Basic Medical Sciences, Federal University Dutse — their qualifications, specialties and contact details.",
+          "Meet the lecturers of the Department of Anatomy, Federal University Dutse — their qualifications, specialties and contact details.",
       },
-      { property: "og:title", content: "Lecturers — FBMS, FUD" },
+      { property: "og:title", content: "Lecturers — Anatomy, FUD" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(lecturersQuery),
@@ -26,7 +26,7 @@ function Lecturers() {
     <SiteLayout>
       <PageHeader
         eyebrow="Our team"
-        title="Faculty lecturers"
+        title="Department lecturers"
         description="The teachers and researchers shaping the next generation of healthcare professionals at FUD."
       />
       <div className="mx-auto max-w-7xl px-6 py-12">
