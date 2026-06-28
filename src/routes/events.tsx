@@ -5,8 +5,8 @@ import { eventsQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/events")({
   head: () => ({ meta: [
-    { title: "Faculty Events — FBMS, FUD" },
-    { name: "description", content: "Seminars, workshops and conferences hosted by the faculty." },
+    { title: "Department Events — Anatomy, FUD" },
+    { name: "description", content: "Seminars, workshops and conferences hosted by the department." },
   ]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(eventsQuery),
   component: Events,
@@ -15,7 +15,7 @@ function Events() {
   const { data } = useSuspenseQuery(eventsQuery);
   return (
     <SiteLayout>
-      <PageHeader eyebrow="Calendar" title="Events" description="Seminars, workshops, conferences and faculty meetings." />
+      <PageHeader eyebrow="Calendar" title="Events" description="Seminars, workshops, conferences and department meetings." />
       <div className="mx-auto max-w-5xl px-6 py-12 grid gap-4 md:grid-cols-2">
         {data.map((e) => (
           <div key={e.id} className="rounded-2xl border bg-card p-6 shadow-soft">

@@ -18,7 +18,7 @@ export function SiteFooter() {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--emerald)]">
                   {s?.university_name ?? "Federal University Dutse"}
                 </p>
-                <p className="text-sm font-semibold">{s?.faculty_name ?? "Faculty of Basic Medical Sciences"}</p>
+                <p className="text-sm font-semibold">{s?.faculty_name ?? "Department of Anatomy"}</p>
               </div>
             </div>
             <p className="mt-6 max-w-md text-sm text-white/60">

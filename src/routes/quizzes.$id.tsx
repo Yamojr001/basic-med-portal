@@ -13,7 +13,7 @@ export const Route = createFileRoute("/quizzes/$id")({
     return d;
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: `${loaderData?.quiz?.title ?? "Quiz"} — FBMS, FUD` }, { name: "description", content: loaderData?.quiz?.description ?? "Quiz" }],
+    meta: [{ title: `${loaderData?.quiz?.title ?? "Quiz"} — Anatomy, FUD` }, { name: "description", content: loaderData?.quiz?.description ?? "Quiz" }],
   }),
   notFoundComponent: () => (<SiteLayout><div className="mx-auto max-w-3xl px-6 py-24 text-center"><h1 className="text-3xl font-semibold">Quiz not found</h1></div></SiteLayout>),
   errorComponent: ({ error }) => (<SiteLayout><div className="mx-auto max-w-3xl px-6 py-24"><p className="text-destructive">{error.message}</p></div></SiteLayout>),

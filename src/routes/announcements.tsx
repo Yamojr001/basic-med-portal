@@ -6,8 +6,8 @@ import { Pin } from "lucide-react";
 
 export const Route = createFileRoute("/announcements")({
   head: () => ({ meta: [
-    { title: "Announcements — FBMS, FUD" },
-    { name: "description", content: "Latest faculty and departmental announcements." },
+    { title: "Announcements — Anatomy, FUD" },
+    { name: "description", content: "Latest departmental announcements." },
   ]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(announcementsQuery()),
   component: () => {

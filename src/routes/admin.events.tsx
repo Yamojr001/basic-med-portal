@@ -19,7 +19,7 @@ function Page() {
       <CrudTable
         table="events"
         queryKey={["admin","events"]}
-        title="Faculty events"
+        title="Department events"
         orderBy="event_date"
         ascending
         columns={[

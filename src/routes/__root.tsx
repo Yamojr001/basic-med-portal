@@ -80,18 +80,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Faculty of Basic Medical Sciences — Federal University Dutse" },
+      { title: "Department of Anatomy — Federal University Dutse" },
       {
         name: "description",
         content:
-          "Official academic portal of the Faculty of Basic Medical Sciences, Federal University Dutse — course materials, timetables, announcements, calendar and quizzes.",
+          "Official academic portal of the Department of Anatomy, Federal University Dutse — course materials, timetables, announcements, calendar and quizzes.",
       },
       { name: "author", content: "Federal University Dutse" },
-      { property: "og:title", content: "Faculty of Basic Medical Sciences — FUD" },
+      { property: "og:title", content: "Department of Anatomy — FUD" },
       {
         property: "og:description",
         content:
-          "Course materials, timetables, announcements and academic calendar for FBMS, Federal University Dutse.",
+          "Course materials, timetables, announcements and academic calendar for Department of Anatomy, Federal University Dutse.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

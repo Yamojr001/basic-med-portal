@@ -6,8 +6,8 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({ meta: [
-    { title: "Contact — FBMS, FUD" },
-    { name: "description", content: "Get in touch with the Faculty of Basic Medical Sciences." },
+    { title: "Contact — Anatomy, FUD" },
+    { name: "description", content: "Get in touch with the Department of Anatomy." },
   ]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(settingsQuery),
   component: Contact,
@@ -16,7 +16,7 @@ function Contact() {
   const { data: s } = useSuspenseQuery(settingsQuery);
   return (
     <SiteLayout>
-      <PageHeader eyebrow="Get in touch" title="Contact the faculty" />
+      <PageHeader eyebrow="Get in touch" title="Contact the department" />
       <div className="mx-auto max-w-3xl px-6 py-12 grid gap-6 md:grid-cols-3">
         {s?.address ? <Item icon={MapPin} label="Address" value={s.address} /> : null}
         {s?.contact_email ? <Item icon={Mail} label="Email" value={s.contact_email} href={`mailto:${s.contact_email}`} /> : null}

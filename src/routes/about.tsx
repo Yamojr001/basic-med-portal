@@ -5,8 +5,8 @@ import { settingsQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/about")({
   head: () => ({ meta: [
-    { title: "About — FBMS, FUD" },
-    { name: "description", content: "About the Faculty of Basic Medical Sciences, Federal University Dutse." },
+    { title: "About — Anatomy, FUD" },
+    { name: "description", content: "About the Department of Anatomy, Federal University Dutse." },
   ]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(settingsQuery),
   component: About,
@@ -15,7 +15,7 @@ function About() {
   const { data: s } = useSuspenseQuery(settingsQuery);
   return (
     <SiteLayout>
-      <PageHeader eyebrow="About" title="The Faculty" description={s?.about ?? undefined} />
+      <PageHeader eyebrow="About" title="The Department" description={s?.about ?? undefined} />
       <div className="mx-auto max-w-3xl px-6 py-12 space-y-10">
         {s?.vision ? <Section title="Vision" body={s.vision} /> : null}
         {s?.mission ? <Section title="Mission" body={s.mission} /> : null}

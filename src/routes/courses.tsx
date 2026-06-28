@@ -8,8 +8,8 @@ export const Route = createFileRoute("/courses")({
   loader: ({ context }) => context.queryClient.ensureQueryData(allCoursesQuery),
   head: () => ({
     meta: [
-      { title: "Courses — FBMS, FUD" },
-      { name: "description", content: "All courses across the Faculty of Basic Medical Sciences." },
+      { title: "Courses — Anatomy, FUD" },
+      { name: "description", content: "All courses across the Department of Anatomy." },
     ],
   }),
   component: CoursesShell,
@@ -30,7 +30,7 @@ function CoursesIndex() {
   );
   return (
     <SiteLayout>
-      <PageHeader eyebrow="All courses" title="Course catalogue" description="Browse every course offered across the faculty." />
+      <PageHeader eyebrow="All courses" title="Course catalogue" description="Browse every course offered across the department." />
       <div className="mx-auto max-w-7xl px-6 py-10">
         <input
           value={q}

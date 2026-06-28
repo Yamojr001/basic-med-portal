@@ -4,7 +4,7 @@ import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { quizzesQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/quizzes")({
-  head: () => ({ meta: [{ title: "Quizzes — FBMS, FUD" }, { name: "description", content: "Self-test quizzes across FBMS courses." }]}),
+  head: () => ({ meta: [{ title: "Quizzes — Anatomy, FUD" }, { name: "description", content: "Self-test quizzes across Anatomy courses." }]}),
   loader: ({ context }) => context.queryClient.ensureQueryData(quizzesQuery),
   component: () => {
     const m = useMatchRoute();

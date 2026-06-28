@@ -46,7 +46,7 @@ export function AdminShell() {
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--navy)] text-white font-bold">FB</div>
             <div className="leading-tight">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--medical)]">FUD</p>
-              <p className="text-sm font-semibold">FBMS Admin</p>
+              <p className="text-sm font-semibold">Anatomy Admin</p>
             </div>
           </Link>
         </div>

@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/search")({
-  head: () => ({ meta: [{ title: "Search — FBMS, FUD" }, { name: "description", content: "Search courses, announcements, lecturers and resources." }]}),
+  head: () => ({ meta: [{ title: "Search — Anatomy, FUD" }, { name: "description", content: "Search courses, announcements, lecturers and resources." }]}),
   component: SearchPage,
 });
 
