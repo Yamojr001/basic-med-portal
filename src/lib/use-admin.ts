@@ -1,36 +1,34 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { getStoredUser, onAuthChange, type AuthUser } from "@/lib/auth-client";
 
-export function useAdmin() {
-  const [state, setState] = useState<{ loading: boolean; userId: string | null; isAdmin: boolean; email: string | null }>({
-    loading: true,
-    userId: null,
-    isAdmin: false,
-    email: null,
+export type AdminState = {
+  loading: boolean;
+  userId: string | null;
+  isAdmin: boolean;
+  email: string | null;
+  user: AuthUser | null;
+};
+
+export function useAdmin(): AdminState {
+  const [state, setState] = useState<AdminState>(() => {
+    const user = getStoredUser();
+    if (user) {
+      return { loading: false, userId: user.id, isAdmin: user.role === "admin", email: user.email, user };
+    }
+    return { loading: true, userId: null, isAdmin: false, email: null, user: null };
   });
 
   useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
-        if (!cancelled) setState({ loading: false, userId: null, isAdmin: false, email: null });
-        return;
+    function sync() {
+      const user = getStoredUser();
+      if (user) {
+        setState({ loading: false, userId: user.id, isAdmin: user.role === "admin", email: user.email, user });
+      } else {
+        setState({ loading: false, userId: null, isAdmin: false, email: null, user: null });
       }
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id);
-      const isAdmin = (roles ?? []).some((r) => r.role === "admin");
-      if (!cancelled)
-        setState({ loading: false, userId: data.user.id, isAdmin, email: data.user.email ?? null });
     }
-    void load();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => void load());
-    return () => {
-      cancelled = true;
-      sub.subscription.unsubscribe();
-    };
+    sync();
+    return onAuthChange(sync);
   }, []);
 
   return state;

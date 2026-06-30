@@ -9,27 +9,24 @@ const submitSchema = z.object({
 });
 
 export const submitQuizAttempt = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => submitSchema.parse(data))
+  .validator((data: unknown) => submitSchema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { queryOne, query, execute } = await import("@/lib/db");
 
-    const { data: quiz, error: qErr } = await supabaseAdmin
-      .from("quizzes")
-      .select("id, passing_score, is_published")
-      .eq("id", data.quiz_id)
-      .maybeSingle();
-    if (qErr) throw new Error(qErr.message);
+    const quiz = await queryOne<{ id: string; passing_score: number; is_published: boolean }>(
+      "SELECT id, passing_score, is_published FROM quizzes WHERE id = $1",
+      [data.quiz_id]
+    );
     if (!quiz || !quiz.is_published) throw new Error("Quiz not available");
 
-    const { data: questions, error: quesErr } = await supabaseAdmin
-      .from("quiz_questions")
-      .select("id, correct_answer, points")
-      .eq("quiz_id", data.quiz_id);
-    if (quesErr) throw new Error(quesErr.message);
+    const questions = await query<{ id: string; correct_answer: string; points: number }>(
+      "SELECT id, correct_answer, points FROM quiz_questions WHERE quiz_id = $1",
+      [data.quiz_id]
+    );
 
     let score = 0;
     let total = 0;
-    for (const q of questions ?? []) {
+    for (const q of questions) {
       total += q.points;
       const given = (data.answers[q.id] ?? "").trim().toLowerCase();
       const correct = (q.correct_answer ?? "").trim().toLowerCase();
@@ -38,17 +35,20 @@ export const submitQuizAttempt = createServerFn({ method: "POST" })
     const percentage = total > 0 ? Math.round((score / total) * 100 * 100) / 100 : 0;
     const passed = percentage >= quiz.passing_score;
 
-    const { error: insErr } = await supabaseAdmin.from("quiz_attempts").insert({
-      quiz_id: data.quiz_id,
-      student_name: data.student_name?.trim() || null,
-      matric_number: data.matric_number?.trim() || null,
-      score,
-      total_points: Math.max(total, 1),
-      percentage,
-      passed,
-      answers: data.answers,
-    });
-    if (insErr) throw new Error(insErr.message);
+    await execute(
+      `INSERT INTO quiz_attempts (quiz_id, student_name, matric_number, score, total_points, percentage, passed, answers)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        data.quiz_id,
+        data.student_name?.trim() || null,
+        data.matric_number?.trim() || null,
+        score,
+        Math.max(total, 1),
+        percentage,
+        passed,
+        JSON.stringify(data.answers),
+      ]
+    );
 
     return { score, total, percentage, passed };
   });
@@ -56,20 +56,12 @@ export const submitQuizAttempt = createServerFn({ method: "POST" })
 const incrementSchema = z.object({ resource_id: z.string().uuid() });
 
 export const incrementResourceDownload = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => incrementSchema.parse(data))
+  .validator((data: unknown) => incrementSchema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error: selErr } = await supabaseAdmin
-      .from("resources")
-      .select("download_count")
-      .eq("id", data.resource_id)
-      .maybeSingle();
-    if (selErr) throw new Error(selErr.message);
-    if (!row) return { ok: false };
-    const { error } = await supabaseAdmin
-      .from("resources")
-      .update({ download_count: (row.download_count ?? 0) + 1 })
-      .eq("id", data.resource_id);
-    if (error) throw new Error(error.message);
-    return { ok: true };
+    const { execute } = await import("@/lib/db");
+    const count = await execute(
+      "UPDATE resources SET download_count = download_count + 1 WHERE id = $1",
+      [data.resource_id]
+    );
+    return { ok: count > 0 };
   });

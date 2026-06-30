@@ -2,19 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AdminHeader } from "@/components/admin/shell";
 import { CrudTable, type Field } from "@/components/admin/crud-table";
-import { supabase } from "@/integrations/supabase/client";
+import { adminFetch } from "@/lib/admin-fns";
 
 export const Route = createFileRoute("/admin/lecturers")({ component: Page });
 
 function Page() {
   const { data: depts } = useQuery({
     queryKey: ["departments", "options"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("departments").select("id,name").order("name");
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () =>
+      adminFetch({ data: { table: "departments", orderBy: "name", ascending: true } }) as Promise<
+        { id: string; name: string }[]
+      >,
   });
+
   const FIELDS: Field[] = [
     { key: "name", label: "Full name", required: true },
     { key: "title", label: "Title", placeholder: "Prof., Dr., Mr., Mrs." },
@@ -30,11 +30,18 @@ function Page() {
     { key: "email", label: "Email" },
     { key: "phone", label: "Phone" },
     { key: "office", label: "Office" },
-    { key: "image_url", label: "Photo", type: "image", bucket: "lecturers", uploadFolder: "photos", fullWidth: true, placeholder: "Paste an image URL or upload below" },
+    {
+      key: "image_url",
+      label: "Photo URL",
+      type: "image",
+      fullWidth: true,
+      placeholder: "Paste a direct image URL",
+    },
     { key: "bio", label: "Brief bio", type: "textarea", fullWidth: true },
     { key: "sort_order", label: "Sort order", type: "number" },
     { key: "is_published", label: "Published", type: "boolean", placeholder: "Visible on site" },
   ];
+
   return (
     <>
       <AdminHeader title="Lecturers" description="Department staff profiles shown on the public Lecturers page." />
@@ -50,7 +57,11 @@ function Page() {
           { key: "position", label: "Position" },
           { key: "specialization", label: "Specialization" },
           { key: "email", label: "Email" },
-          { key: "is_published", label: "Published", render: (r) => (r.is_published ? "Yes" : "No") },
+          {
+            key: "is_published",
+            label: "Published",
+            render: (r) => ((r as { is_published: boolean }).is_published ? "Yes" : "No"),
+          },
         ]}
         fields={FIELDS}
       />

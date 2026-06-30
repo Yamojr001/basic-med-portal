@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { courseByCodeQuery, resourcesByCourseQuery } from "@/lib/queries";
 import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { Download, FileText } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { incrementResourceDownload } from "@/lib/quiz.functions";
 
@@ -30,7 +29,9 @@ export const Route = createFileRoute("/courses/$code")({
   ),
   errorComponent: ({ error }) => (
     <SiteLayout>
-      <div className="mx-auto max-w-3xl px-6 py-24"><p className="text-destructive">{error.message}</p></div>
+      <div className="mx-auto max-w-3xl px-6 py-24">
+        <p className="text-destructive">{error.message}</p>
+      </div>
     </SiteLayout>
   ),
   component: CourseDetail,
@@ -42,11 +43,7 @@ function CourseDetail() {
 
   async function download(r: { id: string; file_url: string; file_name: string | null }) {
     try {
-      let href = r.file_url;
-      if (!/^https?:\/\//.test(r.file_url)) {
-        const { data } = await supabase.storage.from("resources").createSignedUrl(r.file_url, 60 * 60);
-        href = data?.signedUrl ?? "";
-      }
+      const href = r.file_url;
       if (!href) throw new Error("File unavailable");
       await incrementResourceDownload({ data: { resource_id: r.id } });
       const a = document.createElement("a");
@@ -101,11 +98,13 @@ function CourseDetail() {
                   <div key={r.id} className="flex items-center justify-between rounded-2xl border bg-card p-5 shadow-soft">
                     <div className="flex items-start gap-4">
                       <div className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--medical)]/10 text-[var(--medical)]">
-                        <FileText className="h-5 w-5"/>
+                        <FileText className="h-5 w-5" />
                       </div>
                       <div>
                         <p className="font-semibold">{r.title}</p>
-                        {r.description ? <p className="text-xs text-muted-foreground mt-1">{r.description}</p> : null}
+                        {r.description ? (
+                          <p className="text-xs text-muted-foreground mt-1">{r.description}</p>
+                        ) : null}
                         <p className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
                           {r.category} · {new Date(r.created_at).toLocaleDateString()} · {r.download_count} downloads
                         </p>

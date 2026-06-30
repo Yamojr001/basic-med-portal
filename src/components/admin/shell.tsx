@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Building2, BookOpen, FileBox, Calendar, ClipboardList,
   Megaphone, CalendarClock, GraduationCap, Users, Settings, LogOut, ImageIcon, UserSquare2,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { clearStoredAuth } from "@/lib/auth-client";
 import { useAdmin } from "@/lib/use-admin";
 import { useEffect } from "react";
 
@@ -20,7 +20,7 @@ const NAV: NavItem[] = [
   { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
   { to: "/admin/lecturers", label: "Lecturers", icon: UserSquare2 },
   { to: "/admin/quizzes", label: "Quizzes", icon: GraduationCap },
-  { to: "/admin/users", label: "Admins", icon: Users },
+  { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -38,6 +38,11 @@ export function AdminShell() {
   if (loading) return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
   if (!isAdmin) return null;
 
+  function signOut() {
+    clearStoredAuth();
+    navigate({ to: "/auth", replace: true });
+  }
+
   return (
     <div className="flex min-h-screen bg-[var(--surface)] text-foreground">
       <aside className="hidden md:flex w-64 flex-col border-r bg-card">
@@ -54,7 +59,13 @@ export function AdminShell() {
           {NAV.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
-            <Link key={item.to} to={item.to as never} className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${active ? "bg-[var(--medical)]/10 text-[var(--medical)] font-semibold" : "text-muted-foreground hover:bg-muted"}`}>
+              <Link
+                key={item.to}
+                to={item.to as never}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+                  active ? "bg-[var(--medical)]/10 text-[var(--medical)] font-semibold" : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
@@ -64,10 +75,7 @@ export function AdminShell() {
         <div className="border-t p-3">
           <p className="px-2 text-[11px] truncate text-muted-foreground">{email}</p>
           <button
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate({ to: "/auth", replace: true });
-            }}
+            onClick={signOut}
             className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
           >
             <LogOut className="h-4 w-4" /> Sign out
@@ -81,7 +89,15 @@ export function AdminShell() {
   );
 }
 
-export function AdminHeader({ title, description, action }: { title: string; description?: string; action?: React.ReactNode }) {
+export function AdminHeader({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description?: string;
+  action?: React.ReactNode;
+}) {
   return (
     <header className="border-b bg-card px-6 py-5 flex items-center justify-between">
       <div>

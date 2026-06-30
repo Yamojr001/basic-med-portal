@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminHeader } from "@/components/admin/shell";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { settingsQuery } from "@/lib/queries";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUpsertSettings } from "@/lib/admin-fns";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -37,6 +37,8 @@ function Page() {
   const qc = useQueryClient();
   const { data } = useQuery(settingsQuery);
   const [values, setValues] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
     if (data) {
       const v: Record<string, string> = {};
@@ -46,24 +48,49 @@ function Page() {
   }, [data]);
 
   async function save() {
-    const { error } = await supabase.from("site_settings").upsert({ id: 1, ...values });
-    if (error) toast.error(error.message);
-    else { toast.success("Saved"); qc.invalidateQueries({ queryKey: ["site_settings"] }); }
+    setSaving(true);
+    try {
+      await adminUpsertSettings({ data: values });
+      toast.success("Saved");
+      qc.invalidateQueries({ queryKey: ["site_settings"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <>
-      <AdminHeader title="Site settings" action={
-        <button onClick={save} className="rounded-xl bg-[var(--medical)] px-4 py-2 text-sm font-semibold text-white">Save</button>
-      } />
+      <AdminHeader
+        title="Site settings"
+        action={
+          <button
+            onClick={save}
+            disabled={saving}
+            className="rounded-xl bg-[var(--medical)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          >
+            {saving ? "Saving…" : "Save"}
+          </button>
+        }
+      />
       <div className="p-6 grid gap-4 md:grid-cols-2">
         {TEXT_FIELDS.map((f) => (
           <div key={f.key} className={f.textarea ? "md:col-span-2" : undefined}>
             <label className="text-xs uppercase tracking-wider text-muted-foreground">{f.label}</label>
             {f.textarea ? (
-              <textarea rows={4} value={values[f.key] ?? ""} onChange={(e) => setValues({ ...values, [f.key]: e.target.value })} className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm" />
+              <textarea
+                rows={4}
+                value={values[f.key] ?? ""}
+                onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm"
+              />
             ) : (
-              <input value={values[f.key] ?? ""} onChange={(e) => setValues({ ...values, [f.key]: e.target.value })} className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm" />
+              <input
+                value={values[f.key] ?? ""}
+                onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                className="mt-1 w-full rounded-lg border bg-card px-3 py-2 text-sm"
+              />
             )}
           </div>
         ))}

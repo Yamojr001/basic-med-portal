@@ -1,285 +1,110 @@
 import { queryOptions } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-
-async function countOf(table: string) {
-  const { count, error } = await supabase.from(table as never).select("*", { count: "exact", head: true });
-  if (error) throw error;
-  return count ?? 0;
-}
-
-export const homeCountsQuery = queryOptions({
-  queryKey: ["home_counts"],
-  queryFn: async () => {
-    const [departments, courses, lectures, exams, announcements, quizzes] = await Promise.all([
-      countOf("departments"),
-      countOf("courses"),
-      countOf("lecture_timetable"),
-      countOf("exam_timetable"),
-      countOf("announcements"),
-      countOf("quizzes"),
-    ]);
-    return {
-      departments,
-      courses,
-      timetable: lectures + exams,
-      announcements,
-      quizzes,
-      calendar: await countOf("academic_calendar"),
-    };
-  },
-});
+import {
+  fetchSettings, fetchDepartments, fetchDepartmentBySlug,
+  fetchAllCourses, fetchCourseByCode, fetchCoursesByDepartment,
+  fetchResourcesByCourse, fetchAnnouncements, fetchAnnouncementBySlug,
+  fetchCalendar, fetchEvents, fetchGallery, fetchLecturers,
+  fetchLectureTimetable, fetchExamTimetable, fetchQuizzes,
+  fetchQuizDetail, fetchHomeCounts, getFileUrl,
+} from "@/lib/data-fns";
 
 export const settingsQuery = queryOptions({
   queryKey: ["site_settings"],
-  queryFn: async () => {
-    const { data, error } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchSettings(),
 });
 
 export const departmentsQuery = queryOptions({
   queryKey: ["departments"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("departments")
-      .select("*")
-      .order("sort_order", { ascending: true });
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchDepartments(),
 });
 
 export const departmentBySlugQuery = (slug: string) =>
   queryOptions({
     queryKey: ["departments", slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("departments")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-export const coursesByDepartmentQuery = (departmentId: string) =>
-  queryOptions({
-    queryKey: ["courses", "byDept", departmentId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("courses")
-        .select("*")
-        .eq("department_id", departmentId)
-        .order("level")
-        .order("semester")
-        .order("code");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => fetchDepartmentBySlug({ data: slug }),
   });
 
 export const allCoursesQuery = queryOptions({
   queryKey: ["courses"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("courses")
-      .select("*, department:departments(name,slug,code)")
-      .order("code");
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchAllCourses(),
 });
 
 export const courseByCodeQuery = (code: string) =>
   queryOptions({
     queryKey: ["course", code],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("courses")
-        .select("*, department:departments(name,slug,code)")
-        .eq("code", code)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => fetchCourseByCode({ data: code }),
+  });
+
+export const coursesByDepartmentQuery = (departmentId: string) =>
+  queryOptions({
+    queryKey: ["courses", "byDept", departmentId],
+    queryFn: () => fetchCoursesByDepartment({ data: departmentId }),
   });
 
 export const resourcesByCourseQuery = (courseId: string) =>
   queryOptions({
     queryKey: ["resources", courseId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("resources")
-        .select("*")
-        .eq("course_id", courseId)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => fetchResourcesByCourse({ data: courseId }),
   });
 
 export const announcementsQuery = (limit?: number) =>
   queryOptions({
     queryKey: ["announcements", limit ?? "all"],
-    queryFn: async () => {
-      let q = supabase
-        .from("announcements")
-        .select("*")
-        .lte("publish_at", new Date().toISOString())
-        .eq("is_archived", false)
-        .order("is_pinned", { ascending: false })
-        .order("publish_at", { ascending: false });
-      if (limit) q = q.limit(limit);
-      const { data, error } = await q;
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => fetchAnnouncements({ data: limit ?? null }),
   });
 
 export const announcementBySlugQuery = (slug: string) =>
   queryOptions({
     queryKey: ["announcement", slug],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("announcements")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => fetchAnnouncementBySlug({ data: slug }),
   });
 
 export const calendarQuery = queryOptions({
   queryKey: ["calendar"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("academic_calendar")
-      .select("*")
-      .eq("is_archived", false)
-      .order("start_date");
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchCalendar(),
 });
 
 export const eventsQuery = queryOptions({
   queryKey: ["events"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("events")
-      .select("*")
-      .order("event_date", { ascending: true });
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchEvents(),
 });
 
 export const galleryQuery = queryOptions({
   queryKey: ["gallery"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("gallery_images")
-      .select("*")
-      .order("sort_order")
-      .order("created_at", { ascending: false });
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchGallery(),
 });
 
 export const lecturersQuery = queryOptions({
   queryKey: ["lecturers"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("lecturers" as never)
-      .select(
-        "id,name,title,position,department_id,qualifications,specialization,bio,office,image_url,sort_order,is_published,department:departments(name,slug,code)"
-      )
-      .eq("is_published", true)
-      .order("sort_order")
-      .order("name");
-    if (error) throw error;
-    return (data ?? []) as Array<{
-      id: string;
-      name: string;
-      title: string | null;
-      position: string | null;
-      department_id: string | null;
-      qualifications: string | null;
-      specialization: string | null;
-      bio: string | null;
-      office: string | null;
-      image_url: string | null;
-      department: { name: string; slug: string; code: string | null } | null;
-    }>;
-  },
+  queryFn: () => fetchLecturers(),
 });
 
 export const lectureTimetableQuery = queryOptions({
   queryKey: ["lecture_timetable"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("lecture_timetable")
-      .select("*, department:departments(name,slug)")
-      .order("day_of_week")
-      .order("start_time");
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchLectureTimetable(),
 });
 
 export const examTimetableQuery = queryOptions({
   queryKey: ["exam_timetable"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("exam_timetable")
-      .select("*, department:departments(name,slug)")
-      .order("exam_date")
-      .order("start_time");
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchExamTimetable(),
 });
 
 export const quizzesQuery = queryOptions({
   queryKey: ["quizzes"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("quizzes")
-      .select("*, course:courses(code,title), department:departments(name)")
-      .eq("is_published", true)
-      .order("created_at", { ascending: false });
-    if (error) throw error;
-    return data;
-  },
+  queryFn: () => fetchQuizzes(),
 });
 
 export const quizDetailQuery = (id: string) =>
   queryOptions({
     queryKey: ["quiz", id],
-    queryFn: async () => {
-      const [{ data: quiz, error: e1 }, { data: questions, error: e2 }] = await Promise.all([
-        supabase
-          .from("quizzes")
-          .select("*, course:courses(code,title), department:departments(name)")
-          .eq("id", id)
-          .maybeSingle(),
-        supabase
-          .from("quiz_questions")
-          .select("id,quiz_id,question_type,question_text,options,points,sort_order")
-          .eq("quiz_id", id)
-          .order("sort_order"),
-      ]);
-      if (e1) throw e1;
-      if (e2) throw e2;
-      return { quiz, questions: questions ?? [] };
-    },
+    queryFn: () => fetchQuizDetail({ data: id }),
   });
 
-export async function fileUrl(path: string) {
-  const { data } = await supabase.storage.from("resources").createSignedUrl(path, 60 * 60);
-  return data?.signedUrl ?? "";
+export const homeCountsQuery = queryOptions({
+  queryKey: ["home_counts"],
+  queryFn: () => fetchHomeCounts(),
+});
+
+export async function fileUrl(path: string): Promise<string> {
+  return getFileUrl({ data: path });
 }
