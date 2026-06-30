@@ -723,6 +723,65 @@ export type Database = {
       }
     }
     Views: {
+      lecturers_public: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          department_id: string | null
+          id: string | null
+          image_url: string | null
+          is_published: boolean | null
+          name: string | null
+          office: string | null
+          position: string | null
+          qualifications: string | null
+          sort_order: number | null
+          specialization: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_published?: boolean | null
+          name?: string | null
+          office?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sort_order?: number | null
+          specialization?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string | null
+          image_url?: string | null
+          is_published?: boolean | null
+          name?: string | null
+          office?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sort_order?: number | null
+          specialization?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lecturers_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_questions_public: {
         Row: {
           id: string | null
@@ -732,24 +791,6 @@ export type Database = {
           question_type: string | null
           quiz_id: string | null
           sort_order: number | null
-        }
-        Insert: {
-          id?: string | null
-          options?: Json | null
-          points?: number | null
-          question_text?: string | null
-          question_type?: string | null
-          quiz_id?: string | null
-          sort_order?: number | null
-        }
-        Update: {
-          id?: string | null
-          options?: Json | null
-          points?: number | null
-          question_text?: string | null
-          question_type?: string | null
-          quiz_id?: string | null
-          sort_order?: number | null
         }
         Relationships: [
           {
