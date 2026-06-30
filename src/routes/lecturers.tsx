@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Mail, Phone, MapPin, GraduationCap } from "lucide-react";
+import { MapPin, GraduationCap } from "lucide-react";
 import { SiteLayout, PageHeader } from "@/components/site/layout";
 import { lecturersQuery } from "@/lib/queries";
 
@@ -99,24 +99,6 @@ function Lecturers() {
                       <MapPin className="h-3.5 w-3.5" />
                       {l.office}
                     </p>
-                  ) : null}
-                  {l.email ? (
-                    <a
-                      href={`mailto:${l.email}`}
-                      className="flex items-center gap-2 hover:text-[var(--medical)]"
-                    >
-                      <Mail className="h-3.5 w-3.5" />
-                      {l.email}
-                    </a>
-                  ) : null}
-                  {l.phone ? (
-                    <a
-                      href={`tel:${l.phone}`}
-                      className="flex items-center gap-2 hover:text-[var(--medical)]"
-                    >
-                      <Phone className="h-3.5 w-3.5" />
-                      {l.phone}
-                    </a>
                   ) : null}
                 </div>
               </article>

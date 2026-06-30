@@ -723,44 +723,7 @@ export type Database = {
       }
     }
     Views: {
-      quiz_questions_public: {
-        Row: {
-          id: string | null
-          options: Json | null
-          points: number | null
-          question_text: string | null
-          question_type: string | null
-          quiz_id: string | null
-          sort_order: number | null
-        }
-        Insert: {
-          id?: string | null
-          options?: Json | null
-          points?: number | null
-          question_text?: string | null
-          question_type?: string | null
-          quiz_id?: string | null
-          sort_order?: number | null
-        }
-        Update: {
-          id?: string | null
-          options?: Json | null
-          points?: number | null
-          question_text?: string | null
-          question_type?: string | null
-          quiz_id?: string | null
-          sort_order?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_questions_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       has_role: {
