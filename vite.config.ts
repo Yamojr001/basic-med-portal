@@ -18,6 +18,10 @@ export default defineConfig({
       port: 5000,
       strictPort: true,
       allowedHosts: true,
+      headers: {
+        "X-Frame-Options": "ALLOWALL",
+        "Content-Security-Policy": "frame-ancestors *",
+      },
     },
   },
 });
