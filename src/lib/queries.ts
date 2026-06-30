@@ -195,7 +195,9 @@ export const lecturersQuery = queryOptions({
   queryFn: async () => {
     const { data, error } = await supabase
       .from("lecturers" as never)
-      .select("*, department:departments(name,slug,code)")
+      .select(
+        "id,name,title,position,department_id,qualifications,specialization,bio,office,image_url,sort_order,is_published,department:departments(name,slug,code)"
+      )
       .eq("is_published", true)
       .order("sort_order")
       .order("name");
@@ -209,8 +211,6 @@ export const lecturersQuery = queryOptions({
       qualifications: string | null;
       specialization: string | null;
       bio: string | null;
-      email: string | null;
-      phone: string | null;
       office: string | null;
       image_url: string | null;
       department: { name: string; slug: string; code: string | null } | null;
@@ -268,7 +268,7 @@ export const quizDetailQuery = (id: string) =>
           .eq("id", id)
           .maybeSingle(),
         supabase
-          .from("quiz_questions_public" as never)
+          .from("quiz_questions")
           .select("id,quiz_id,question_type,question_text,options,points,sort_order")
           .eq("quiz_id", id)
           .order("sort_order"),
