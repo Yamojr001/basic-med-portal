@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".vercel/output",
+  "outputDirectory": ".vercel/.output",
   "installCommand": "npm ci --include=dev --no-audit --no-fund --registry=https://registry.npmjs.org",
   "framework": null,
   "regions": ["iad1"]
