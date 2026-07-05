@@ -5,12 +5,19 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// NITRO_PRESET controls deployment target:
+//   "vercel"      → Vercel (default) — outputs to .vercel/output/
+//   "node-server" → Railway / Render / VPS — outputs to .output/server/index.mjs
+//   "netlify"     → Netlify — outputs to .netlify/functions-internal/
+const preset = (process.env.NITRO_PRESET as string | undefined) ?? "vercel";
+
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
+    serverFns: { disableCsrfMiddlewareWarning: true },
   },
   nitro: {
-    preset: "vercel",
+    preset,
   },
   vite: {
     server: {

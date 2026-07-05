@@ -1,0 +1,3 @@
+- [Deployment setup](deployment-setup.md) — TanStack Start + Nitro fullstack; NITRO_PRESET env var switches between vercel/node-server/netlify; schema.sql must be run once on DB.
+- [Auth architecture](auth-arch.md) — Custom JWT (jose HS256, 7d), bcryptjs, token in localStorage key `fud_anatomy_token`; attachAuth client middleware adds Bearer header; ensureAdmin() inline in each admin server fn.
+- [DB config](db-config.md) — Replit uses helium PostgreSQL; DATABASE_SSL must be "false" for helium, "true" for cloud providers; pg Pool singleton in src/lib/db.ts.

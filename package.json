@@ -6,10 +6,14 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:node": "NITRO_PRESET=node-server vite build",
+    "build:netlify": "NITRO_PRESET=netlify vite build",
     "build:dev": "vite build --mode development",
+    "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
