@@ -12,6 +12,32 @@ RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
 $$;
 
+-- Supabase RPC helpers for server-side SQL execution
+CREATE OR REPLACE FUNCTION run_query_sql(sql TEXT)
+RETURNS TABLE(row JSONB)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  RETURN QUERY EXECUTE 'SELECT to_jsonb(_row) AS row FROM (' || sql || ') AS _row';
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION run_execute_sql(sql TEXT)
+RETURNS BIGINT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE affected BIGINT;
+BEGIN
+  EXECUTE sql;
+  GET DIAGNOSTICS affected = ROW_COUNT;
+  RETURN affected;
+END;
+$$;
+
 -- ============================================================
 -- USERS (replaces Supabase Auth)
 -- ============================================================

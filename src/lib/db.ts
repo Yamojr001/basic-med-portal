@@ -1,51 +1,55 @@
-import pg from "pg";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const { Pool } = pg;
+type RpcRow = { row: Record<string, unknown> };
 
-let pool: pg.Pool | undefined;
-
-function getConnectionString(): string {
-  const connectionString =
-    process.env.DATABASE_URL ||
-    process.env.SUPABASE_DATABASE_URL ||
-    process.env.SUPABASE_DB_URL;
-
-  if (!connectionString) {
-    throw new Error(
-      "[DB] DATABASE_URL is not set. For Supabase, copy the Postgres connection string from Settings → Database → Connection string and set it as DATABASE_URL (or SUPABASE_DATABASE_URL)."
-    );
-  }
-
-  return connectionString;
+function quoteSqlLiteral(value: unknown): string {
+  if (value === null || value === undefined) return "null";
+  if (value instanceof Date) return `'${value.toISOString().replace(/'/g, "''")}'`;
+  if (typeof value === "number") return Number.isFinite(value) ? String(value) : "null";
+  if (typeof value === "boolean") return value ? "true" : "false";
+  const text = typeof value === "string" ? value : JSON.stringify(value);
+  return `'${text.replace(/'/g, "''")}'`;
 }
 
-function getPool(): pg.Pool {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: getConnectionString(),
-      max: 10,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
-      ssl: process.env.DATABASE_SSL === "false" ? false : { rejectUnauthorized: false },
-    });
-    pool.on("error", (err) => {
-      console.error("[DB] Unexpected pool error", err);
-    });
+function substituteSqlParams(text: string, values?: unknown[]): string {
+  if (!values?.length) return text;
+  return values
+    .map((value, index) => [index + 1, quoteSqlLiteral(value)] as const)
+    .sort((a, b) => b[0] - a[0])
+    .reduce((sql, [index, literal]) => sql.replace(new RegExp(`\\$${index}(?!\\d)`, "g"), literal), text);
+}
+
+function normalizeQuerySql(text: string): string {
+  const trimmed = text.trim();
+  if (/^(insert|update|delete)\b/i.test(trimmed) && /\breturning\b/i.test(trimmed)) {
+    return `with _result as (${trimmed}) select to_jsonb(_result) as row from _result`;
   }
-  return pool;
+  return trimmed;
+}
+
+async function runQuerySql<T = Record<string, unknown>>(text: string, values?: unknown[]): Promise<T[]> {
+  const sql = substituteSqlParams(normalizeQuerySql(text), values);
+  const { data, error } = await supabaseAdmin.rpc("run_query_sql", { sql });
+  if (error) throw error;
+  return ((data ?? []) as RpcRow[]).map((item) => item.row as T);
+}
+
+async function runExecuteSql(text: string, values?: unknown[]): Promise<number> {
+  const sql = substituteSqlParams(text, values);
+  const { data, error } = await supabaseAdmin.rpc("run_execute_sql", { sql });
+  if (error) throw error;
+  return Number(data ?? 0);
 }
 
 export async function query<T = Record<string, unknown>>(text: string, values?: unknown[]): Promise<T[]> {
-  const result = await getPool().query(text, values);
-  return result.rows as T[];
+  return runQuerySql<T>(text, values);
 }
 
 export async function queryOne<T = Record<string, unknown>>(text: string, values?: unknown[]): Promise<T | null> {
-  const result = await getPool().query(text, values);
-  return (result.rows[0] ?? null) as T | null;
+  const rows = await runQuerySql<T>(text, values);
+  return (rows[0] ?? null) as T | null;
 }
 
 export async function execute(text: string, values?: unknown[]): Promise<number> {
-  const result = await getPool().query(text, values);
-  return result.rowCount ?? 0;
+  return runExecuteSql(text, values);
 }
