@@ -4,14 +4,25 @@ const { Pool } = pg;
 
 let pool: pg.Pool | undefined;
 
+function getConnectionString(): string {
+  const connectionString =
+    process.env.DATABASE_URL ||
+    process.env.SUPABASE_DATABASE_URL ||
+    process.env.SUPABASE_DB_URL;
+
+  if (!connectionString) {
+    throw new Error(
+      "[DB] DATABASE_URL is not set. For Supabase, copy the Postgres connection string from Settings → Database → Connection string and set it as DATABASE_URL (or SUPABASE_DATABASE_URL)."
+    );
+  }
+
+  return connectionString;
+}
+
 function getPool(): pg.Pool {
   if (!pool) {
-    const connectionString = process.env.DATABASE_URL;
-    if (!connectionString) {
-      throw new Error("[DB] DATABASE_URL environment variable is not set. Add it to your .env file.");
-    }
     pool = new Pool({
-      connectionString,
+      connectionString: getConnectionString(),
       max: 10,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,

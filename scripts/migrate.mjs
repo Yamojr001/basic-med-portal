@@ -20,9 +20,11 @@ try {
   /* dotenv not installed — use system env */
 }
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL || process.env.SUPABASE_DATABASE_URL || process.env.SUPABASE_DB_URL;
 if (!DATABASE_URL) {
-  console.error("ERROR: DATABASE_URL environment variable is not set.");
+  console.error(
+    "ERROR: DATABASE_URL is not set. For Supabase, copy the Postgres connection string from Settings → Database → Connection string and set it as DATABASE_URL (or SUPABASE_DATABASE_URL)."
+  );
   process.exit(1);
 }
 
