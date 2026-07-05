@@ -130,7 +130,7 @@ git push -u origin main
    - **Framework Preset**: `Other`
    - **Build Command**: `npm run build`
    - **Output Directory**: `.vercel/output` *(leave as detected)*
-   - **Install Command**: `npm install`
+   - **Install Command**: `npm ci --include=dev --no-audit --no-fund`
 4. Click **Environment Variables** and add all four variables from Section 4
 
 ### Step 3: Deploy
