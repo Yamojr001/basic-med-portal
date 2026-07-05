@@ -1,0 +1,109 @@
+Skip to content
+Back
+New Project
+
+Avatar for yamojr001-5155
+New Project
+importing from GitHub
+
+Yamojr001/basic-med-portal
+main
+Choose where you want to create the project and give it a name.
+
+Vercel Team
+
+Yamojr's projects
+Hobby
+Slash Divider
+Project Name
+basic-med-portal
+Application Preset
+Framework logo
+TanStack Start
+Root Directory
+./
+Key
+SUPABASE_PROJECT_ID
+Value
+••••••••••••••••••••
+
+Environments
+
+Production and Preview
+Key
+SUPABASE_PUBLISHABLE_KEY
+Value
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+Environments
+
+Production and Preview
+Key
+SUPABASE_URL
+Value
+••••••••••••••••••••••••••••••••••••••••
+
+Environments
+
+Production and Preview
+Key
+VITE_SUPABASE_PROJECT_ID
+Value
+••••••••••••••••••••
+
+Environments
+
+Production and Preview
+Key
+VITE_SUPABASE_PUBLISHABLE_KEY
+Value
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+Environments
+
+Production and Preview
+Key
+VITE_SUPABASE_URL
+Value
+••••••••••••••••••••••••••••••••••••••••
+
+Environments
+
+Production and Preview
+or paste the .env contents Learn more
+
+Deployment
+Deployment failed with error.
+Build Logs
+1m 15s
+15 lines
+
+1
+
+1
+/1
+Find in logs
+CtrlF
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 2 cores, 8 GB
+Cloning github.com/Yamojr001/basic-med-portal (Branch: main, Commit: c63a28a)
+Previous build caches not available.
+Cloning completed: 559.000ms
+Running "vercel build"
+Vercel CLI 54.19.0
+Running "install" command: `npm install`...
+npm warn deprecated tsconfck@3.1.6: unmaintained
+npm warn deprecated recharts@2.15.4: 1.x and 2.x branches are no longer active. Bump to Recharts v3 to receive latest features and bugfixes. See https://github.com/recharts/recharts/wiki/3.0-migration-guide
+npm error Exit handler never called!
+npm error This is an error with npm itself. Please report this error at:
+npm error   <https://github.com/npm/cli/issues>
+npm error A complete log of this run can be found in: /vercel/.npm/_logs/2026-07-05T13_33_07_534Z-debug-0.log
+Error: Command "npm install" exited with 1
+Deployment Summary
+Assigning Custom Domains
+Merge pull request #1 from Yamojr001/master - c63a28
+
+Tip: The Vercel app for Slack connects deployments to Slack channels.
+Import a different Git Repository →
+Browse Templates →
+New Project – Vercel
