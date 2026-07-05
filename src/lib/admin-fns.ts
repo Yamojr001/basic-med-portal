@@ -173,7 +173,8 @@ export const adminGrantAdmin = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await ensureAdmin();
     const { execute } = await import("@/lib/db");
-    await execute("UPDATE users SET role = 'admin' WHERE id = $1", [data.userId]);
+    const count = await execute("UPDATE users SET role = 'admin' WHERE id = $1", [data.userId]);
+    if (count === 0) throw new Error("User not found.");
     return { ok: true };
   });
 
@@ -183,6 +184,7 @@ export const adminRevokeAdmin = createServerFn({ method: "POST" })
     const me = await ensureAdmin();
     if (me.sub === data.userId) throw new Error("Cannot revoke your own admin access.");
     const { execute } = await import("@/lib/db");
-    await execute("UPDATE users SET role = 'user' WHERE id = $1", [data.userId]);
+    const count = await execute("UPDATE users SET role = 'user' WHERE id = $1", [data.userId]);
+    if (count === 0) throw new Error("User not found.");
     return { ok: true };
   });

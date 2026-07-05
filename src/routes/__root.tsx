@@ -5,11 +5,13 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
+  useRouter,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { onAuthChange } from "../lib/auth-client";
 import "../lib/fonts";
 import { Toaster } from "sonner";
 
@@ -37,7 +39,9 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
-  reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  useEffect(() => {
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -110,6 +114,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    return onAuthChange(() => {
+      router.invalidate();
+      queryClient.invalidateQueries();
+    });
+  }, [queryClient, router]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />

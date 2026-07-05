@@ -11,7 +11,9 @@ function parseJwt(token: string): (AuthUser & { exp?: number }) | null {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
-    const decoded = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+    const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+    const decoded = JSON.parse(atob(padded));
     if (!decoded.sub || !decoded.email) return null;
     return { id: decoded.sub, email: decoded.email, role: decoded.role ?? "user", exp: decoded.exp };
   } catch {

@@ -73,13 +73,14 @@ export const fetchAnnouncements = createServerFn({ method: "GET" })
   .validator((limit: number | null) => limit)
   .handler(async ({ data: limit }) => {
     const { query } = await import("@/lib/db");
+    const hasLimit = typeof limit === "number" && Number.isFinite(limit) && limit > 0;
     const sql = `
       SELECT * FROM announcements
       WHERE publish_at <= NOW() AND is_archived = false
       ORDER BY is_pinned DESC, publish_at DESC
-      ${limit ? `LIMIT ${Number(limit)}` : ""}
+      ${hasLimit ? "LIMIT $1" : ""}
     `;
-    return query(sql);
+    return query(sql, hasLimit ? [limit] : undefined);
   });
 
 export const fetchAnnouncementBySlug = createServerFn({ method: "GET" })

@@ -1,0 +1,296 @@
+Pull request overview
+This PR migrates the app off the Supabase SDK to a direct PostgreSQL-backed architecture using TanStack Start server functions, adds a custom JWT + bcrypt auth system, and updates deployment configs/docs for Vercel/Railway/Render.
+
+Changes:
+
+Added PostgreSQL schema + migration tooling and a shared pg pool helper for server functions.
+Replaced Supabase data access with server functions (data-fns, admin-fns) and updated routes/admin UI to use them.
+Implemented custom auth (JWT in localStorage, attach middleware, admin enforcement) and refreshed deployment documentation/configs.
+Reviewed changes
+Copilot reviewed 42 out of 44 changed files in this pull request and generated 10 comments.
+
+Show a summary per file
+💡 Add Copilot custom instructions for smarter, more guided reviews. Learn how to get started.
+
+vite.config.ts
+Comment on lines +24 to +27
+      host: "0.0.0.0",
+      port: 5000,
+      strictPort: true,
+      allowedHosts: true,
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+The dev server is configured to bind on all interfaces (0.0.0.0) while disabling host checking (allowedHosts: true). If this dev server is reachable beyond localhost (e.g., in a shared sandbox), it increases exposure to DNS-rebinding / host-header style attacks. Prefer binding to localhost by default, or restrict allowedHosts to a known list for your environment.
+
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+vite.config.ts
+Comment on lines +28 to +31
+      headers: {
+        "X-Frame-Options": "ALLOWALL",
+        "Content-Security-Policy": "frame-ancestors *",
+      },
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+High
+These dev-server headers explicitly disable clickjacking protections (X-Frame-Options: ALLOWALL and frame-ancestors *). With host=0.0.0.0 this can allow the app to be embedded by any origin during development, which is risky in shared environments. Use SAMEORIGIN/'self' unless you have a specific, controlled embedding use case.
+
+Suggested changeset 1 (1)
+vite.config.ts
+Original file line number	Diff line number	Diff line change
+       strictPort: true,
+       allowedHosts: true,
+       headers: {
+         "X-Frame-Options": "ALLOWALL",
+         "Content-Security-Policy": "frame-ancestors *",
+       },
+         "X-Frame-Options": "SAMEORIGIN",
+         "Content-Security-Policy": "frame-ancestors 'self'",
+       }
+     },
+   },
+ });
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/routes/__root.tsx
+  Scripts,
+} from "@tanstack/react-router";
+import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+Root error handling is doing side effects (error reporting) and (in a later suggested change) auth-change subscriptions; these should be placed in a useEffect. Importing useEffect from React is needed to avoid side effects during render and to ensure effects only run client-side.
+
+Suggested changeset 1 (1)
+src/routes/__root.tsx
+Original file line number	Diff line number	Diff line change
+   HeadContent,
+   Scripts,
+ } from "@tanstack/react-router";
+ import { type ReactNode } from "react";
+ import { useEffect, type ReactNode } from "react";
+ import appCss from "../styles.css?url";
+ import { reportLovableError } from "../lib/lovable-error-reporting";
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/routes/__root.tsx
+Comment on lines 38 to 41
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  console.error(error);
+  const router = useRouter();
+  useEffect(() => {
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error]);
+  reportLovableError(error, { boundary: "tanstack_root_error_component" });
+
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+reportLovableError is invoked during render. Error boundaries can re-render multiple times, which can lead to duplicate error reports and makes render impure. Move this side effect into a useEffect keyed on the error.
+
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/routes/__root.tsx
+Comment on lines 111 to 113
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => subscription.unsubscribe();
+  }, [queryClient, router]);
+
+  return (
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+The previous global auth-state subscription was removed, but the new localStorage-based auth flow still needs a global hook to clear/invalidate cached data on auth changes. Without this, React Query can retain privileged admin data after sign-out and briefly show stale data when a different user signs in on the same device.
+
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/lib/auth-client.ts
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const decoded = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+High
+JWT base64url decoding here doesn't add padding. Valid JWT payloads can omit '=' padding, which can cause atob() to throw in some cases. Add proper base64 padding before decoding so parseJwt works reliably across tokens.
+
+Suggested changeset 1 (1)
+src/lib/auth-client.ts
+Original file line number	Diff line number	Diff line change
+   try {
+     const parts = token.split(".");
+     if (parts.length !== 3) return null;
+     const decoded = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+     const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+     const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+     const decoded = JSON.parse(atob(padded));
+     if (!decoded.sub || !decoded.email) return null;
+     return { id: decoded.sub, email: decoded.email, role: decoded.role ?? "user", exp: decoded.exp };
+   } catch {
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/lib/data-fns.ts
+Comment on lines +74 to +83
+  .handler(async ({ data: limit }) => {
+    const { query } = await import("@/lib/db");
+    const sql = `
+      SELECT * FROM announcements
+      WHERE publish_at <= NOW() AND is_archived = false
+      ORDER BY is_pinned DESC, publish_at DESC
+      ${limit ? `LIMIT ${Number(limit)}` : ""}
+    `;
+    return query(sql);
+  });
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+This query interpolates LIMIT directly into the SQL string. Even though the value is coerced with Number(), it still bypasses parameterization and also treats limit=0 as "no limit" because 0 is falsy. Prefer a parameterized LIMIT and an explicit numeric check so 0 behaves as expected.
+
+Suggested changeset 1 (1)
+src/lib/data-fns.ts
+Original file line number	Diff line number	Diff line change
+   .validator((limit: number | null) => limit)
+   .handler(async ({ data: limit }) => {
+     const { query } = await import("@/lib/db");
+     const hasLimit = typeof limit === "number" && Number.isFinite(limit) && limit >= 0;
+     const sql = `
+       SELECT * FROM announcements
+       WHERE publish_at <= NOW() AND is_archived = false
+       ORDER BY is_pinned DESC, publish_at DESC
+       ${limit ? `LIMIT ${Number(limit)}` : ""}
+       ${hasLimit ? "LIMIT $1" : ""}
+     `;
+     return query(sql);
+     return query(sql, hasLimit ? [limit] : undefined);
+   });
+ export const fetchAnnouncementBySlug = createServerFn({ method: "GET" })
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/lib/admin-fns.ts
+Comment on lines +173 to +178
+  .handler(async ({ data }) => {
+    await ensureAdmin();
+    const { execute } = await import("@/lib/db");
+    await execute("UPDATE users SET role = 'admin' WHERE id = $1", [data.userId]);
+    return { ok: true };
+  });
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+adminGrantAdmin always returns ok:true even if the user ID does not exist (UPDATE affects 0 rows). This can mislead the UI into reporting success when nothing changed. Check rowCount and throw (or return ok:false) when no rows are updated.
+
+Suggested changeset 1 (1)
+src/lib/admin-fns.ts
+Original file line number	Diff line number	Diff line change
+   .handler(async ({ data }) => {
+     await ensureAdmin();
+     const { execute } = await import("@/lib/db");
+     await execute("UPDATE users SET role = 'admin' WHERE id = $1", [data.userId]);
+     const count = await execute("UPDATE users SET role = 'admin' WHERE id = $1", [data.userId]);
+     if (count === 0) throw new Error("User not found.");
+     return { ok: true };
+   });
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+src/lib/admin-fns.ts
+Comment on lines +182 to +188
+  .handler(async ({ data }) => {
+    const me = await ensureAdmin();
+    if (me.sub === data.userId) throw new Error("Cannot revoke your own admin access.");
+    const { execute } = await import("@/lib/db");
+    await execute("UPDATE users SET role = 'user' WHERE id = $1", [data.userId]);
+    return { ok: true };
+  });
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+Medium
+adminRevokeAdmin always returns ok:true even if the target user ID does not exist (UPDATE affects 0 rows). Check rowCount so the UI can surface a real error instead of reporting success.
+
+Suggested changeset 1 (1)
+src/lib/admin-fns.ts
+Original file line number	Diff line number	Diff line change
+     const me = await ensureAdmin();
+     if (me.sub === data.userId) throw new Error("Cannot revoke your own admin access.");
+     const { execute } = await import("@/lib/db");
+     await execute("UPDATE users SET role = 'user' WHERE id = $1", [data.userId]);
+     const count = await execute("UPDATE users SET role = 'user' WHERE id = $1", [data.userId]);
+     if (count === 0) throw new Error("User not found.");
+     return { ok: true };
+   });
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+.replit
+Comment on lines +11 to +18
+[userenv.shared]
+VITE_SUPABASE_URL = "https://qnnmlybaaueamrebqlwd.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubm1seWJhYXVlYW1yZWJxbHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODUwMzIsImV4cCI6MjA5ODA2MTAzMn0.2RQYVSxVKTx8GZWxJ9efDAoBuf9Uy3Jsl7i79sLjznA"
+SUPABASE_URL = "https://qnnmlybaaueamrebqlwd.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubm1seWJhYXVlYW1yZWJxbHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODUwMzIsImV4cCI6MjA5ODA2MTAzMn0.2RQYVSxVKTx8GZWxJ9efDAoBuf9Uy3Jsl7i79sLjznA"
+SUPABASE_PROJECT_ID = "qnnmlybaaueamrebqlwd"
+VITE_SUPABASE_PROJECT_ID = "qnnmlybaaueamrebqlwd"
+DATABASE_SSL = "false"
+Copilot commented 2 hours ago
+Copilot
+Copilot
+AI
+2h ago
+High
+This file commits Supabase project URL and publishable key into the repo, even though the PR migrates away from Supabase. Keeping unused third-party keys/config in version control increases the blast radius if the project is ever reused or re-enabled. Remove these Supabase env entries (or replace with placeholders) to avoid leaking/depending on obsolete credentials.
+
+Suggested changeset 1 (1)
+.replit
+Original file line number	Diff line number	Diff line change
+[userenv]
+[userenv.shared]
+VITE_SUPABASE_URL = "https://qnnmlybaaueamrebqlwd.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubm1seWJhYXVlYW1yZWJxbHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODUwMzIsImV4cCI6MjA5ODA2MTAzMn0.2RQYVSxVKTx8GZWxJ9efDAoBuf9Uy3Jsl7i79sLjznA"
+SUPABASE_URL = "https://qnnmlybaaueamrebqlwd.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubm1seWJhYXVlYW1yZWJxbHdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODUwMzIsImV4cCI6MjA5ODA2MTAzMn0.2RQYVSxVKTx8GZWxJ9efDAoBuf9Uy3Jsl7i79sLjznA"
+SUPABASE_PROJECT_ID = "qnnmlybaaueamrebqlwd"
+VITE_SUPABASE_PROJECT_ID = "qnnmlybaaueamrebqlwd"
+DATABASE_SSL = "false"
+[workflows]
+Copilot uses AI. Check for mistakes.
+@Yamojr001	Reply...
+Merge info
+Pull request successfully merged and closed
