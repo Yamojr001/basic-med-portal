@@ -26,7 +26,7 @@ export const loginFn = createServerFn({ method: "POST" })
 export const signupFn = createServerFn({ method: "POST" })
   .validator((data: unknown) => signupSchema.parse(data))
   .handler(async ({ data }) => {
-    const { queryOne, query } = await import("@/lib/db");
+    const { queryOne, execute } = await import("@/lib/db");
     const { hashPassword, signToken } = await import("@/lib/auth-server");
 
     const existing = await queryOne("SELECT id FROM users WHERE email = $1", [data.email.toLowerCase()]);
@@ -36,11 +36,15 @@ export const signupFn = createServerFn({ method: "POST" })
     const adminEmail = (process.env.ADMIN_EMAIL ?? "").toLowerCase();
     const role = adminEmail && data.email.toLowerCase() === adminEmail ? "admin" : "user";
 
-    const rows = await query<{ id: string; email: string; role: string }>(
-      "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role",
-      [data.email.toLowerCase(), passwordHash, role]
+    const id = crypto.randomUUID();
+    await execute(
+      "INSERT INTO users (id, email, password_hash, role) VALUES ($1, $2, $3, $4)",
+      [id, data.email.toLowerCase(), passwordHash, role]
     );
-    const user = rows[0];
+    const user = await queryOne<{ id: string; email: string; role: string }>(
+      "SELECT id, email, role FROM users WHERE id = $1",
+      [id]
+    );
     if (!user) throw new Error("Failed to create account.");
 
     const token = await signToken({ sub: user.id, email: user.email, role: user.role });

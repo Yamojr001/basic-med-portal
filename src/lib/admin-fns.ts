@@ -78,19 +78,26 @@ export const adminInsert = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await ensureAdmin();
     if (!ALLOWED_TABLES.has(data.table)) throw new Error(`Table not allowed: ${data.table}`);
-    const { query } = await import("@/lib/db");
+    const { query, execute } = await import("@/lib/db");
     const clean = Object.fromEntries(
       Object.entries(data.data).filter(([, v]) => v !== "" && v !== undefined && v !== null || v === false || v === 0)
     );
+    if (!clean.id && data.table !== "site_settings") {
+      clean.id = crypto.randomUUID();
+    }
     const cols = Object.keys(clean).map(safeColumn);
     const vals = Object.values(clean);
     const placeholders = vals.map((_, i) => `$${i + 1}`).join(", ");
     if (cols.length === 0) throw new Error("No data provided");
-    const rows = await query(
-      `INSERT INTO ${data.table} (${cols.join(", ")}) VALUES (${placeholders}) RETURNING *`,
+    await execute(
+      `INSERT INTO ${data.table} (${cols.join(", ")}) VALUES (${placeholders})`,
       vals
     );
-    return rows[0] ?? null;
+    if (clean.id) {
+       const rows = await query(`SELECT * FROM ${data.table} WHERE id = $1`, [clean.id]);
+       return rows[0] ?? null;
+    }
+    return { success: true };
   });
 
 const adminUpdateSchema = z.object({
@@ -104,7 +111,7 @@ export const adminUpdate = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await ensureAdmin();
     if (!ALLOWED_TABLES.has(data.table)) throw new Error(`Table not allowed: ${data.table}`);
-    const { query } = await import("@/lib/db");
+    const { query, execute } = await import("@/lib/db");
     const clean = Object.fromEntries(
       Object.entries(data.data).filter(([k]) => k !== "id")
         .filter(([, v]) => v !== "" && v !== undefined || v === false || v === 0)
@@ -113,10 +120,11 @@ export const adminUpdate = createServerFn({ method: "POST" })
     if (cols.length === 0) throw new Error("No data to update");
     const vals = Object.values(clean);
     const sets = cols.map((c, i) => `${c} = $${i + 1}`).join(", ");
-    const rows = await query(
-      `UPDATE ${data.table} SET ${sets} WHERE id = $${vals.length + 1} RETURNING *`,
+    await execute(
+      `UPDATE ${data.table} SET ${sets} WHERE id = $${vals.length + 1}`,
       [...vals, data.id]
     );
+    const rows = await query(`SELECT * FROM ${data.table} WHERE id = $1`, [data.id]);
     return rows[0] ?? null;
   });
 

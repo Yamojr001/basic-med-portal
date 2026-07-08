@@ -7,7 +7,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { createRequire } from "module";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
@@ -18,19 +18,47 @@ try {
   const { config } = createRequire(import.meta.url)("dotenv");
   config();
 } catch {
-  /* dotenv not installed — use system env */
+  /* dotenv not installed — we'll try a manual .env loader below */
+}
+
+// Manual .env loader (uses project root .env). Will not overwrite existing env vars.
+try {
+  const envPath = join(__dirname, "..", ".env");
+  if (existsSync(envPath)) {
+    const raw = readFileSync(envPath, "utf8");
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eq = trimmed.indexOf('=');
+      if (eq === -1) continue;
+      const key = trimmed.slice(0, eq).trim();
+      let val = trimmed.slice(eq + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      if (!process.env[key]) process.env[key] = val;
+    }
+    console.log("Loaded environment variables from .env");
+  }
+} catch (e) {
+  // non-fatal
 }
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
-  console.error("ERROR: SUPABASE_URL and SUPABASE_SECRET_KEY are required.");
-  process.exit(1);
-}
+const PG_CONNECTION = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.PG_CONNECTION_STRING;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+let supabase = null;
+if (!PG_CONNECTION) {
+  if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
+    console.error("ERROR: SUPABASE_URL and SUPABASE_SECRET_KEY are required when DATABASE_URL is not provided.");
+    process.exit(1);
+  }
+
+  supabase = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
 
 const sql = readFileSync(join(__dirname, "..", "schema.sql"), "utf8");
 
@@ -146,9 +174,64 @@ function splitStatements(input) {
   return statements;
 }
 
-console.log("Connecting to Supabase…");
+console.log(PG_CONNECTION ? "Connecting to Postgres..." : "Connecting to Supabase…");
 try {
-  for (const statement of splitStatements(sql)) {
+  const statements = splitStatements(sql);
+
+  if (PG_CONNECTION) {
+    // Execute all statements directly against Postgres using pg client
+    const { Client } = await import('pg');
+    const client = new Client({ connectionString: PG_CONNECTION, ssl: { rejectUnauthorized: false } });
+    await client.connect();
+    try {
+      for (const statement of statements) {
+        if (!statement) continue;
+        await client.query(statement);
+      }
+    } finally {
+      await client.end();
+    }
+    console.log("✓ Schema applied successfully via direct Postgres connection.");
+    process.exit(0);
+  }
+
+  // Bootstrap: execute any RPC-creation statements directly using the
+  // Postgres query endpoint so the RPC functions exist before we call them.
+  for (const statement of statements) {
+    const lower = statement.trim().toLowerCase();
+    if (lower.includes('function run_query_sql') || lower.includes('function run_execute_sql')) {
+      // Try SDK postgres API first
+      if (supabase.postgres && typeof supabase.postgres.query === "function") {
+        const res = await supabase.postgres.query({ sql: statement });
+        if (res.error) throw res.error;
+      } else if (process.env.SUPABASE_ADMIN_SQL_URL) {
+        // Fallback: POST to a user-provided Supabase admin SQL endpoint.
+        const url = process.env.SUPABASE_ADMIN_SQL_URL;
+        const body = JSON.stringify({ sql: statement });
+        const headers = {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_SECRET_KEY,
+          Authorization: `Bearer ${SUPABASE_SECRET_KEY}`,
+        };
+        const r = await fetch(url, { method: "POST", headers, body });
+        if (!r.ok) {
+          const text = await r.text();
+          throw new Error(`Admin SQL request failed: ${r.status} ${r.statusText} - ${text}`);
+        }
+      } else {
+        throw new Error(
+          "No available method to execute bootstrap SQL: install @supabase/postgres-js or set SUPABASE_ADMIN_SQL_URL"
+        );
+      }
+    }
+  }
+
+  // Now run the rest of the statements through the RPC helper.
+  for (const statement of statements) {
+    const lower = statement.trim().toLowerCase();
+    if (lower.includes('function run_query_sql') || lower.includes('function run_execute_sql')) {
+      continue;
+    }
     const { error } = await supabase.rpc("run_execute_sql", { sql: statement });
     if (error) throw error;
   }

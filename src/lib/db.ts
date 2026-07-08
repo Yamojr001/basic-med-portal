@@ -1,4 +1,17 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import type { Pool } from "pg";
+
+const PG_CONNECTION =
+  process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.PG_CONNECTION_STRING;
+
+let pgPool: Pool | null = null;
+async function ensurePgPool() {
+  if (!PG_CONNECTION) return;
+  if (pgPool) return;
+  const pg = await import("pg");
+  const PoolCtor = (pg as any).Pool as typeof Pool;
+  pgPool = new PoolCtor({ connectionString: PG_CONNECTION, ssl: { rejectUnauthorized: false } });
+}
 
 type RpcRow = { row: Record<string, unknown> };
 
@@ -16,18 +29,25 @@ function substituteSqlParams(text: string, values?: unknown[]): string {
   return values
     .map((value, index) => [index + 1, quoteSqlLiteral(value)] as const)
     .sort((a, b) => b[0] - a[0])
-    .reduce((sql, [index, literal]) => sql.replace(new RegExp(`\\$${index}(?!\\d)`, "g"), literal), text);
+    .reduce(
+      (sql, [index, literal]) => sql.replace(new RegExp(`\\$${index}(?!\\d)`, "g"), literal),
+      text
+    );
 }
 
 function normalizeQuerySql(text: string): string {
-  const trimmed = text.trim();
-  if (/^(insert|update|delete)\b/i.test(trimmed) && /\breturning\b/i.test(trimmed)) {
-    return `with _result as (${trimmed}) select to_jsonb(_result) as row from _result`;
-  }
-  return trimmed;
+  return text.trim();
 }
 
 async function runQuerySql<T = Record<string, unknown>>(text: string, values?: unknown[]): Promise<T[]> {
+  // If a plain Postgres connection is provided, use pg driver with parameter binding.
+  if (PG_CONNECTION) {
+    await ensurePgPool();
+    const sql = normalizeQuerySql(text);
+    const res = await pgPool!.query(sql, values as any[]);
+    return (res.rows ?? []) as T[];
+  }
+
   const sql = substituteSqlParams(normalizeQuerySql(text), values);
   const { data, error } = await supabaseAdmin.rpc("run_query_sql", { sql });
   if (error) throw error;
@@ -35,6 +55,12 @@ async function runQuerySql<T = Record<string, unknown>>(text: string, values?: u
 }
 
 async function runExecuteSql(text: string, values?: unknown[]): Promise<number> {
+  if (PG_CONNECTION) {
+    await ensurePgPool();
+    const res = await pgPool!.query(text, values as any[]);
+    return Number(res.rowCount ?? 0);
+  }
+
   const sql = substituteSqlParams(text, values);
   const { data, error } = await supabaseAdmin.rpc("run_execute_sql", { sql });
   if (error) throw error;

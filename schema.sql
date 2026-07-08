@@ -8,19 +8,22 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Generic updated_at trigger function
 CREATE OR REPLACE FUNCTION set_updated_at()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
 $$;
 
 -- Supabase RPC helpers for server-side SQL execution
 CREATE OR REPLACE FUNCTION run_query_sql(sql TEXT)
-RETURNS TABLE(row JSONB)
+RETURNS TABLE("row" JSONB)
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  RETURN QUERY EXECUTE 'SELECT to_jsonb(_row) AS row FROM (' || sql || ') AS _row';
+  RETURN QUERY EXECUTE 'SELECT to_jsonb(_row) AS "row" FROM (' || sql || ') AS _row';
 END;
 $$;
 
@@ -37,6 +40,10 @@ BEGIN
   RETURN affected;
 END;
 $$;
+
+-- Security: revoke public/anon execution of RPC helpers to avoid exposing SECURITY DEFINER functions
+REVOKE EXECUTE ON FUNCTION public.run_query_sql(text) FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.run_execute_sql(text) FROM anon, authenticated;
 
 -- ============================================================
 -- USERS (replaces Supabase Auth)

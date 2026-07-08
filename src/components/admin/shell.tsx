@@ -35,7 +35,7 @@ export function AdminShell() {
     }
   }, [loading, isAdmin, navigate]);
 
-  if (loading) return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
+  if (loading) return <div suppressHydrationWarning className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
   if (!isAdmin) return null;
 
   function signOut() {
